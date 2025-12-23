@@ -1,0 +1,150 @@
+.level-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff, #e0e7ff, #fce7f3);
+  padding: 24px;
+}
+
+.level-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.level-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.back-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: white;
+  color: #475569;
+  border-radius: 9999px;
+  font-weight: bold;
+  font-size: 18px;
+  text-decoration: none;
+  transition: box-shadow 0.3s ease;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 32px;
+}
+
+.back-btn:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.level-title {
+  font-size: 48px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.title-gradient {
+  background: linear-gradient(to right, #0284c7, #d946ef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.level-subtitle {
+  color: #475569;
+  font-size: 18px;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.level-card-link {
+  text-decoration: none;
+}
+
+.level-card {
+  padding: 32px;
+  border-radius: 24px;
+  background: white;
+  text-align: center;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+  border: 2px solid #f1f5f9;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  color: #1e293b;
+  font-weight: bold;
+}
+
+.level-card:hover {
+  border-color: #a5b4fc;
+}
+
+.level-card-hovered {
+  background: linear-gradient(to right, #0ea5e9, #6366f1);
+  color: white;
+  box-shadow: 0 20px 40px rgba(14, 165, 233, 0.3);
+  transform: translateY(-8px);
+}
+
+.level-number {
+  font-size: 56px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.level-difficulty {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.level-stars {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.star {
+  font-size: 28px;
+}
+
+.star-filled {
+  color: #fbbf24;
+}
+
+.star-empty {
+  color: #cbd5e1;
+}
+
+.level-card-hovered .star-empty {
+  color: #e0e7ff;
+}
+
+.level-card-easy {
+  background: linear-gradient(135deg, #d4fc79, #96f250);
+  border-color: #86efac;
+}
+
+.level-card-easy:hover {
+  border-color: #4ade80;
+}
+
+.level-card-medium {
+  background: linear-gradient(135deg, #fde047, #facc15);
+  border-color: #fcd34d;
+}
+
+.level-card-medium:hover {
+  border-color: #f59e0b;
+}
+
+.level-card-hard {
+  background: linear-gradient(135deg, #fb7185, #f43f5e);
+  border-color: #fb6b7d;
+}
+
+.level-card-hard:hover {
+  border-color: #e11d48;
+}
+
