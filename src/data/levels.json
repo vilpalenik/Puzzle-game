@@ -2,7 +2,7 @@
   "levels": [
     {
       "id": 1,
-      "name": "Nový tvar",
+      "name": "Trojuholník",
       "difficulty": "Easy",
       "targetShape": {
         "width": 500,
@@ -12,7 +12,7 @@
             "id": "large-triangle-1",
             "type": "large-triangle",
             "position": {
-              "x": 91.97222900390625,
+              "x": 140,
               "y": 218
             },
             "rotation": 45,
@@ -22,7 +22,7 @@
             "id": "large-triangle-2",
             "type": "large-triangle",
             "position": {
-              "x": 305.97222900390625,
+              "x": 352.132,
               "y": 218
             },
             "rotation": 45,
@@ -32,8 +32,8 @@
             "id": "medium-triangle",
             "type": "medium-triangle",
             "position": {
-              "x": 177.6666259765625,
-              "y": 196.6666717529297
+              "x": 246.066,
+              "y": 218
             },
             "rotation": 90,
             "color": "#81C784"
@@ -42,28 +42,28 @@
             "id": "small-triangle-1",
             "type": "small-triangle",
             "position": {
-              "x": 295.63885498046875,
-              "y": 171.66668701171875
+              "x": 193.033,
+              "y": 164.967
             },
-            "rotation": 135,
+            "rotation": 45,
             "color": "#FFD54F"
           },
           {
             "id": "small-triangle-2",
             "type": "small-triangle",
             "position": {
-              "x": 171.31939697265625,
-              "y": 153.33334350585938
+              "x": 352.132,
+              "y": 218
             },
-            "rotation": 45,
+            "rotation": 135,
             "color": "#FF8A65"
           },
           {
             "id": "square",
             "type": "square",
             "position": {
-              "x": 211.31939697265625,
-              "y": 105.33334350585938
+              "x": 246.066,
+              "y": 111.934
             },
             "rotation": 45,
             "color": "#BA68C8"
@@ -72,8 +72,8 @@
             "id": "parallelogram",
             "type": "parallelogram",
             "position": {
-              "x": 197.31939697265625,
-              "y": 196.33334350585938
+              "x": 299.099,
+              "y": 164.967
             },
             "rotation": 90,
             "color": "#4DB6AC"

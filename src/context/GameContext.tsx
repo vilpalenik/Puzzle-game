@@ -1,9 +1,27 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { GameState, Level, LevelsData } from '../types/game';
+import type { GameState, Level, LevelsData, PieceType } from '../types/game';
 import levelsDataRaw from '../data/levels.json';
 
 const levelsData = levelsDataRaw as LevelsData;
+
+// Symetria pre každý typ kúsku (v stupňoch)
+const PIECE_SYMMETRY: Record<PieceType, number> = {
+  'large-triangle': 360,    // Žiadna symetria (len 360°)
+  'medium-triangle': 360,   // Žiadna symetria
+  'small-triangle': 360,    // Žiadna symetria
+  'square': 90,             // Symetria každých 90° (0°, 90°, 180°, 270° sú rovnaké)
+  'parallelogram': 180,     // Symetria každých 180° (0° = 180°, 90° = 270°)
+};
+
+// Rozmer kúskov (pre výpočet offsetu)
+const PIECE_SIZES: Record<PieceType, { width: number; height: number }> = {
+  'large-triangle': { width: 150, height: 150 },
+  'medium-triangle': { width: 107, height: 107 },
+  'small-triangle': { width: 75, height: 75 },
+  'square': { width: 75, height: 75 },
+  'parallelogram': { width: 160, height: 54 },
+};
 
 interface GameContextType {
   gameState: GameState;
@@ -53,33 +71,32 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const loadLevel = (levelId: number) => {
     const level = levelsData.levels.find(l => l.id === levelId);
     if (level) {
-        setCurrentLevel(level);
-        
-        // UPRAVENÉ POZÍCIE - bližšie k stredu
-        const positions = [
-        { x: 80, y: 100 },      // Ľavá strana hore
-        { x: 80, y: 250 },      // Ľavá strana stred
-        { x: 80, y: 400 },      // Ľavá strana dole
-        { x: 780, y: 100 },     // Pravá strana hore
-        { x: 780, y: 250 },     // Pravá strana stred
-        { x: 780, y: 400 },     // Pravá strana dole
-        { x: 330, y: 530 },     // Dole v strede
-        ];
+      setCurrentLevel(level);
+      
+      const positions = [
+        { x: 80, y: 100 },
+        { x: 80, y: 250 },
+        { x: 80, y: 400 },
+        { x: 780, y: 100 },
+        { x: 780, y: 250 },
+        { x: 780, y: 400 },
+        { x: 330, y: 530 },
+      ];
 
-        const initialPieces = level.targetShape.pieces.map((piece, index) => ({
+      const initialPieces = level.targetShape.pieces.map((piece, index) => ({
         ...piece,
         position: positions[index] || { x: 100 + index * 80, y: 500 },
-        rotation: Math.floor(Math.random() * 8) * 45,
-        }));
-        
-        setGameState(prev => ({ 
+        rotation: 0,
+      }));
+      
+      setGameState(prev => ({ 
         ...prev, 
         currentLevel: levelId,
         pieces: initialPieces, 
         isCompleted: false 
-        }));
+      }));
     }
-    };
+  };
 
   const updatePiecePosition = (id: string, position: { x: number; y: number }) => {
     setGameState(prev => ({
@@ -99,50 +116,156 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }));
   };
 
+  // Funkcia na výpočet pozície ľavého horného rohu pri danej rotácii
+  const getPositionForRotation = (
+    basePosition: { x: number; y: number },
+    baseRotation: number,
+    actualRotation: number,
+    pieceType: PieceType
+  ): { x: number; y: number } => {
+    const size = PIECE_SIZES[pieceType];
+    const normalizeRot = (rot: number) => ((rot % 360) + 360) % 360;
+    
+    const base = normalizeRot(baseRotation);
+    const actual = normalizeRot(actualRotation);
+    
+    // Vypočítaj koľko 90° krokov je rozdiel
+    const diff = normalizeRot(actual - base);
+    const steps90 = Math.round(diff / 90) % 4;
+    
+    let offsetX = 0;
+    let offsetY = 0;
+    
+    // Pre štvorec (75x75) - každý 90° krok posúva ľavý horný roh
+    if (pieceType === 'square') {
+      if (steps90 === 1) {
+        // 90° rotácia: ľavý horný roh sa posunie doprava o výšku
+        offsetX = size.width;
+        offsetY = 0;
+      } else if (steps90 === 2) {
+        // 180° rotácia: posun doprava aj dole
+        offsetX = size.width;
+        offsetY = size.height;
+      } else if (steps90 === 3) {
+        // 270° rotácia: posun doprava
+        offsetX = 0;
+        offsetY = size.height;
+      }
+    }
+    
+    // Pre kosoštvorec - len 180° symetria
+    if (pieceType === 'parallelogram') {
+      if (steps90 === 2 || steps90 === -2) {
+        // 180° rotácia
+        offsetX = size.width;
+        offsetY = size.height;
+      }
+    }
+    
+    return {
+      x: basePosition.x + offsetX,
+      y: basePosition.y + offsetY
+    };
+  };
+
+  // Funkcia na kontrolu či rotácie sú symetrické + kontrola pozície s offsetom
+  const piecesMatch = (
+    userPiece: { id: string; type: PieceType; position: { x: number; y: number }; rotation: number; color: string },
+    targetPiece: { id: string; type: PieceType; position: { x: number; y: number }; rotation: number; color: string },
+    boardCenterX: number,
+    boardCenterY: number,
+    positionTolerance: number
+  ): boolean => {
+    const symmetry = PIECE_SYMMETRY[userPiece.type];
+    const normalizeRotation = (rot: number) => ((rot % 360) + 360) % 360;
+    
+    const userNorm = normalizeRotation(userPiece.rotation);
+    const targetNorm = normalizeRotation(targetPiece.rotation);
+    
+    const diff = Math.abs(userNorm - targetNorm);
+    const altDiff = 360 - diff;
+    const minDiff = Math.min(diff, altDiff);
+    
+    const ROTATION_TOLERANCE = 15;
+    
+    // Skontroluj všetky symetrické rotácie
+    for (let i = 0; i * symmetry <= 360; i++) {
+      const symmetricAngle = i * symmetry;
+      if (Math.abs(minDiff - symmetricAngle) < ROTATION_TOLERANCE) {
+        // Rotácia sedí! Teraz skontroluj pozíciu
+        // Vypočítaj kde by mal byť ľavý horný roh pri user rotácii
+        const baseTargetPos = {
+          x: boardCenterX + (targetPiece.position.x - 250),
+          y: boardCenterY + (targetPiece.position.y - 250)
+        };
+        
+        const expectedPos = getPositionForRotation(
+          baseTargetPos,
+          targetPiece.rotation,
+          userPiece.rotation,
+          userPiece.type
+        );
+        
+        const positionMatch =
+          Math.abs(userPiece.position.x - expectedPos.x) < positionTolerance &&
+          Math.abs(userPiece.position.y - expectedPos.y) < positionTolerance;
+        
+        if (positionMatch) return true;
+      }
+    }
+    
+    return false;
+  };
+
   const showHint = () => {
     if (!currentLevel) return;
 
-    // Nájdi kúsky ktoré ešte nie sú správne umiestnené
-    const incorrectPieces = gameState.pieces.filter(userPiece => {
-      const targetPiece = currentLevel.targetShape.pieces.find(p => p.id === userPiece.id);
-      if (!targetPiece) return false;
+    const boardCenterX = 500;
+    const boardCenterY = 325;
+    const POSITION_TOLERANCE = 30;
 
-      const boardCenterX = 500;
-      const boardCenterY = 325;
-      const targetX = boardCenterX + (targetPiece.position.x - 250);
-      const targetY = boardCenterY + (targetPiece.position.y - 250);
-
-      const isCorrectPosition = 
-        Math.abs(userPiece.position.x - targetX) < 30 &&
-        Math.abs(userPiece.position.y - targetY) < 30;
-
-      const normalizeRot = (rot: number) => ((rot % 360) + 360) % 360;
-      const isCorrectRotation = 
-        Math.abs(normalizeRot(userPiece.rotation) - normalizeRot(targetPiece.rotation)) < 15;
-
-      return !(isCorrectPosition && isCorrectRotation);
+    const occupiedTargets = new Set<number>();
+    const correctUserPieces = new Set<string>();
+    
+    gameState.pieces.forEach(userPiece => {
+      currentLevel.targetShape.pieces.forEach((targetPiece, targetIndex) => {
+        if (targetPiece.type !== userPiece.type) return;
+        
+        if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE)) {
+          occupiedTargets.add(targetIndex);
+          correctUserPieces.add(userPiece.id);
+        }
+      });
     });
 
-    if (incorrectPieces.length === 0) return;
+    for (const userPiece of gameState.pieces) {
+      if (correctUserPieces.has(userPiece.id)) {
+        continue;
+      }
 
-    // Vyber náhodný nesprávny kúsok
-    const randomPiece = incorrectPieces[Math.floor(Math.random() * incorrectPieces.length)];
-    const targetPiece = currentLevel.targetShape.pieces.find(p => p.id === randomPiece.id);
-    
-    if (targetPiece) {
-      const boardCenterX = 500;
-      const boardCenterY = 325;
-      const correctX = boardCenterX + (targetPiece.position.x - 250);
-      const correctY = boardCenterY + (targetPiece.position.y - 250);
+      const candidateTargets = currentLevel.targetShape.pieces
+        .map((piece, index) => ({ piece, index }))
+        .filter(({ piece, index }) => 
+          piece.type === userPiece.type && !occupiedTargets.has(index)
+        );
 
-      setGameState(prev => ({
-        ...prev,
-        pieces: prev.pieces.map(piece =>
-          piece.id === randomPiece.id
-            ? { ...piece, position: { x: correctX, y: correctY }, rotation: targetPiece.rotation }
-            : piece
-        ),
-      }));
+      if (candidateTargets.length > 0) {
+        const randomIndex = Math.floor(Math.random() * candidateTargets.length);
+        const { piece: targetPiece } = candidateTargets[randomIndex];
+        
+        const correctX = boardCenterX + (targetPiece.position.x - 250);
+        const correctY = boardCenterY + (targetPiece.position.y - 250);
+
+        setGameState(prev => ({
+          ...prev,
+          pieces: prev.pieces.map(piece =>
+            piece.id === userPiece.id
+              ? { ...piece, position: { x: correctX, y: correctY }, rotation: targetPiece.rotation }
+              : piece
+          ),
+        }));
+        return;
+      }
     }
   };
 
@@ -150,30 +273,26 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     if (!currentLevel) return false;
 
     const POSITION_TOLERANCE = 30;
-    const ROTATION_TOLERANCE = 15;
+    const boardCenterX = 500;
+    const boardCenterY = 325;
+
+    const usedTargetIndices = new Set<number>();
 
     const allPiecesCorrect = gameState.pieces.every(userPiece => {
-      const targetPiece = currentLevel.targetShape.pieces.find(p => p.id === userPiece.id);
-      if (!targetPiece) return false;
+      const candidateTargets = currentLevel.targetShape.pieces
+        .map((piece, index) => ({ piece, index }))
+        .filter(({ piece, index }) => 
+          piece.type === userPiece.type && !usedTargetIndices.has(index)
+        );
 
-      const boardCenterX = 500;
-      const boardCenterY = 325;
-      
-      const targetX = boardCenterX + (targetPiece.position.x - 250);
-      const targetY = boardCenterY + (targetPiece.position.y - 250);
+      for (const { piece: targetPiece, index } of candidateTargets) {
+        if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE)) {
+          usedTargetIndices.add(index);
+          return true;
+        }
+      }
 
-      const positionMatch =
-        Math.abs(userPiece.position.x - targetX) < POSITION_TOLERANCE &&
-        Math.abs(userPiece.position.y - targetY) < POSITION_TOLERANCE;
-
-      const normalizeRotation = (rot: number) => ((rot % 360) + 360) % 360;
-      const userRot = normalizeRotation(userPiece.rotation);
-      const targetRot = normalizeRotation(targetPiece.rotation);
-      
-      const rotationMatch = Math.abs(userRot - targetRot) < ROTATION_TOLERANCE ||
-                           Math.abs(userRot - targetRot) > (360 - ROTATION_TOLERANCE);
-
-      return positionMatch && rotationMatch;
+      return false;
     });
 
     if (allPiecesCorrect && !gameState.isCompleted) {
@@ -189,29 +308,29 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   const resetLevel = () => {
     if (currentLevel) {
-        const positions = [
-          { x: 80, y: 100 },      // Ľavá strana hore
-          { x: 80, y: 250 },      // Ľavá strana stred
-          { x: 80, y: 400 },      // Ľavá strana dole
-          { x: 780, y: 100 },     // Pravá strana hore
-          { x: 780, y: 250 },     // Pravá strana stred
-          { x: 780, y: 400 },     // Pravá strana dole
-          { x: 330, y: 530 },     // Dole v strede
-        ];
+      const positions = [
+        { x: 80, y: 100 },
+        { x: 80, y: 250 },
+        { x: 80, y: 400 },
+        { x: 780, y: 100 },
+        { x: 780, y: 250 },
+        { x: 780, y: 400 },
+        { x: 330, y: 530 },
+      ];
 
-        const initialPieces = currentLevel.targetShape.pieces.map((piece, index) => ({
+      const initialPieces = currentLevel.targetShape.pieces.map((piece, index) => ({
         ...piece,
         position: positions[index] || { x: 100 + index * 80, y: 500 },
-        rotation: Math.floor(Math.random() * 8) * 45,
-        }));
-        
-        setGameState(prev => ({
+        rotation: 0,
+      }));
+      
+      setGameState(prev => ({
         ...prev,
         pieces: initialPieces,
         isCompleted: false,
-        }));
+      }));
     }
-    };
+  };
 
   return (
     <GameContext.Provider

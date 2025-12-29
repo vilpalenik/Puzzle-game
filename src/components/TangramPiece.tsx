@@ -23,14 +23,6 @@ const PIECE_SIZES: Record<PieceType, number> = {
   'parallelogram': 160,
 };
 
-const PIECE_CENTERS: Record<PieceType, { x: number; y: number }> = {
-  'large-triangle': { x: 50, y: 50 },      // 150/3, 150/3
-  'medium-triangle': { x: 35.35, y: 35.35 }, // 106/3, 106/3
-  'small-triangle': { x: 25, y: 25 },      // 75/3, 75/3
-  'square': { x: 37.5, y: 37.5 },          // 75/2, 75/2
-  'parallelogram': { x: 79.5, y: 26.5 },   // Približne
-};
-
 export const TangramPiece: React.FC<TangramPieceProps> = ({
   piece,
   onDrag,
@@ -40,7 +32,6 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const pieceRef = useRef<SVGSVGElement>(null);
   const size = PIECE_SIZES[piece.type];
-  const center = PIECE_CENTERS[piece.type];
 
   const handleStart = (clientX: number, clientY: number) => {
     setDragging(true);
@@ -128,8 +119,8 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
         pointerEvents: 'none',
       }}
     >
-      {/* Rotácia okolo centra kúsku */}
-      <g transform={`rotate(${piece.rotation} ${center.x} ${center.y})`}>
+      {/* Rotácia okolo ľavého horného rohu (0,0) */}
+      <g transform={`rotate(${piece.rotation})`}>
         <path
           d={PIECE_PATHS[piece.type]}
           fill={piece.color}
