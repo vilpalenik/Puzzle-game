@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import { GameProvider } from './context/GameContext';
+import HomePage from './pages/HomePage';
+import LevelPage from './pages/LevelPage';
+import GamePage from './pages/GamePage';
+import ControlsPage from './pages/ControlsPage';
+import LevelEditor from './pages/LevelEditor';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <GameProvider>
+      <HashRouter>
+        <div className="min-h-screen flex flex-col">
+          <Routes>
+            <Route path="/editor" element={<LevelEditor />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/levels" element={<LevelPage />} />
+            <Route path="/game/:id" element={<GamePage />} />
+            <Route path="/controls" element={<ControlsPage />} />
+          </Routes>
+        </div>
+      </HashRouter>
+    </GameProvider>
+  );
+};
 
-export default App
+export default App;

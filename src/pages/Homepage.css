@@ -1,0 +1,295 @@
+
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff, #e0e7ff, #fce7f3);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-content {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 64px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: -2px;
+}
+
+.title-shape {
+  background: linear-gradient(to right, #0369a1, #3b82f6, #d946ef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-subtitle {
+  font-size: 48px;
+  font-weight: 900;
+  margin-bottom: 24px;
+  letter-spacing: -1px;
+  color: #1e293b;
+}
+
+.title-builder {
+  background: linear-gradient(to right, #dc2626, #7c3aed, #0284c7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-description {
+  color: #475569;
+  margin-bottom: 48px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.home-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.btn {
+  display: block;
+  padding: 20px 32px;
+  border-radius: 24px;
+  font-weight: bold;
+  font-size: 18px;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(to right, #0ea5e9, #6366f1);
+  color: white;
+  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.2);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 20px 40px rgba(14, 165, 233, 0.4);
+  transform: translateY(-4px);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-secondary {
+  background: white;
+  color: #1e293b;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:active {
+  transform: scale(0.95);
+}
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@media (min-width: 768px) {
+  .home-title {
+    font-size: 96px;
+  }
+  .home-subtitle {
+    font-size: 72px;
+  }
+}
+/* Malé obrazovky - mobilné telefóny (< 480px) */
+@media (max-width: 479px) {
+  .home-container {
+    padding: 16px;
+  }
+
+  .home-content {
+    max-width: 100%;
+  }
+
+  .home-title {
+    font-size: 32px;
+    margin-bottom: 4px;
+    letter-spacing: 0;
+  }
+
+  .home-subtitle {
+    font-size: 24px;
+    margin-bottom: 16px;
+    letter-spacing: 0;
+  }
+
+  .home-description {
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+
+  .home-buttons {
+    max-width: 100%;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 16px 24px;
+    font-size: 16px;
+    border-radius: 16px;
+  }
+}
+
+/* Stredne malé obrazovky - tablety (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .home-container {
+    padding: 20px;
+  }
+
+  .home-title {
+    font-size: 44px;
+    margin-bottom: 6px;
+    letter-spacing: -1px;
+  }
+
+  .home-subtitle {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .home-description {
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+
+  .home-buttons {
+    max-width: 350px;
+    gap: 14px;
+  }
+
+  .btn {
+    padding: 18px 28px;
+    font-size: 16px;
+  }
+}
+
+/* Stredné obrazovky - malé tablety (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .home-container {
+    padding: 24px;
+  }
+
+  .home-title {
+    font-size: 72px;
+  }
+
+  .home-subtitle {
+    font-size: 56px;
+  }
+
+  .home-description {
+    font-size: 19px;
+    margin-bottom: 44px;
+  }
+
+  .home-buttons {
+    max-width: 380px;
+  }
+
+  .btn {
+    padding: 18px 30px;
+  }
+}
+
+/* Väčšie obrazovky - desktopy (1024px+) */
+@media (min-width: 1024px) {
+  .home-title {
+    font-size: 96px;
+  }
+
+  .home-subtitle {
+    font-size: 72px;
+  }
+
+  .home-description {
+    font-size: 20px;
+  }
+
+  .btn {
+    padding: 20px 32px;
+    font-size: 18px;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 20px 40px rgba(14, 165, 233, 0.4);
+    transform: translateY(-4px);
+  }
+}
+
+/* Landscape orientácia na mobiloch */
+@media (max-height: 500px) and (orientation: landscape) {
+  .home-container {
+    min-height: auto;
+    padding: 12px;
+  }
+
+  .home-title {
+    font-size: 36px;
+    margin-bottom: 4px;
+  }
+
+  .home-subtitle {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .home-description {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Veľmi malé obrazovky (< 320px) */
+@media (max-width: 319px) {
+  .home-title {
+    font-size: 28px;
+  }
+
+  .home-subtitle {
+    font-size: 20px;
+  }
+
+  .home-description {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 14px 20px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+}
