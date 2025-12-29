@@ -1,0 +1,150 @@
+import React, { useRef, useState, useEffect } from 'react';
+import type { TangramPiece as TangramPieceType, PieceType } from '../types/game';
+
+interface TangramPieceProps {
+  piece: TangramPieceType;
+  onDrag: (id: string, position: { x: number; y: number }) => void;
+  onRotate: (id: string) => void;
+}
+
+const PIECE_PATHS: Record<PieceType, string> = {
+  'large-triangle': 'M 0,0 L 150,0 L 0,150 Z',
+  'medium-triangle': 'M 0,0 L 0,106.066 L 106.066,0 Z',
+  'small-triangle': 'M 0,0 L 75,0 L 0,75 Z',
+  'square': 'M 0,0 L 75,0 L 75,75 L 0,75 Z',
+  'parallelogram': 'M 0,0 L 106.066,0 L 159.099,53.033 L 53.033,53.033 Z',
+};
+
+const PIECE_SIZES: Record<PieceType, number> = {
+  'large-triangle': 150,
+  'medium-triangle': 107,
+  'small-triangle': 75,
+  'square': 75,
+  'parallelogram': 160,
+};
+
+const PIECE_CENTERS: Record<PieceType, { x: number; y: number }> = {
+  'large-triangle': { x: 50, y: 50 },      // 150/3, 150/3
+  'medium-triangle': { x: 35.35, y: 35.35 }, // 106/3, 106/3
+  'small-triangle': { x: 25, y: 25 },      // 75/3, 75/3
+  'square': { x: 37.5, y: 37.5 },          // 75/2, 75/2
+  'parallelogram': { x: 79.5, y: 26.5 },   // Približne
+};
+
+export const TangramPiece: React.FC<TangramPieceProps> = ({
+  piece,
+  onDrag,
+  onRotate,
+}) => {
+  const [dragging, setDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const pieceRef = useRef<SVGSVGElement>(null);
+  const size = PIECE_SIZES[piece.type];
+  const center = PIECE_CENTERS[piece.type];
+
+  const handleStart = (clientX: number, clientY: number) => {
+    setDragging(true);
+    const rect = pieceRef.current?.getBoundingClientRect();
+    if (rect) {
+      setDragOffset({
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      });
+    }
+  };
+
+  const handleMove = (clientX: number, clientY: number) => {
+    if (!dragging) return;
+
+    const gameBoard = document.getElementById('game-board');
+    if (!gameBoard) return;
+
+    const boardRect = gameBoard.getBoundingClientRect();
+    const newX = clientX - boardRect.left - dragOffset.x;
+    const newY = clientY - boardRect.top - dragOffset.y;
+
+    onDrag(piece.id, { x: newX, y: newY });
+  };
+
+  const handleEnd = () => {
+    setDragging(false);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientX, e.clientY);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleStart(touch.clientX, touch.clientY);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
+    if (dragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleEnd);
+      window.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('touchend', handleEnd);
+      
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleEnd);
+        window.removeEventListener('touchmove', handleTouchMove);
+        window.removeEventListener('touchend', handleEnd);
+      };
+    }
+  }, [dragging, dragOffset]);
+
+  const handleDoubleClick = () => {
+    onRotate(piece.id);
+  };
+
+  return (
+    <svg
+      ref={pieceRef}
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      style={{
+        position: 'absolute',
+        left: `${piece.position.x}px`,
+        top: `${piece.position.y}px`,
+        cursor: dragging ? 'grabbing' : 'grab',
+        zIndex: dragging ? 1000 : 10,
+        transition: dragging ? 'none' : 'all 0.1s ease-out',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        touchAction: 'none',
+        overflow: 'visible',
+        pointerEvents: 'none',
+      }}
+    >
+      {/* Rotácia okolo centra kúsku */}
+      <g transform={`rotate(${piece.rotation} ${center.x} ${center.y})`}>
+        <path
+          d={PIECE_PATHS[piece.type]}
+          fill={piece.color}
+          stroke="#333"
+          strokeWidth="2"
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          onDoubleClick={handleDoubleClick}
+          style={{
+            filter: dragging ? 'brightness(1.1) drop-shadow(0 4px 8px rgba(0,0,0,0.3))' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+            pointerEvents: 'auto',
+            cursor: dragging ? 'grabbing' : 'grab',
+          }}
+        />
+      </g>
+    </svg>
+  );
+};

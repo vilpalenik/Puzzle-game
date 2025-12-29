@@ -1,0 +1,87 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "name": "Nový tvar",
+      "difficulty": "Easy",
+      "targetShape": {
+        "width": 500,
+        "height": 500,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 91.97222900390625,
+              "y": 218
+            },
+            "rotation": 45,
+            "color": "#E57373"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 305.97222900390625,
+              "y": 218
+            },
+            "rotation": 45,
+            "color": "#64B5F6"
+          },
+          {
+            "id": "medium-triangle",
+            "type": "medium-triangle",
+            "position": {
+              "x": 177.6666259765625,
+              "y": 196.6666717529297
+            },
+            "rotation": 90,
+            "color": "#81C784"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 295.63885498046875,
+              "y": 171.66668701171875
+            },
+            "rotation": 135,
+            "color": "#FFD54F"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 171.31939697265625,
+              "y": 153.33334350585938
+            },
+            "rotation": 45,
+            "color": "#FF8A65"
+          },
+          {
+            "id": "square",
+            "type": "square",
+            "position": {
+              "x": 211.31939697265625,
+              "y": 105.33334350585938
+            },
+            "rotation": 45,
+            "color": "#BA68C8"
+          },
+          {
+            "id": "parallelogram",
+            "type": "parallelogram",
+            "position": {
+              "x": 197.31939697265625,
+              "y": 196.33334350585938
+            },
+            "rotation": 90,
+            "color": "#4DB6AC"
+          }
+        ]
+      }
+    }
+  ]
+}
+
+
