@@ -7,20 +7,11 @@ const levelsData = levelsDataRaw as LevelsData;
 
 // Symetria pre každý typ kúsku (v stupňoch)
 const PIECE_SYMMETRY: Record<PieceType, number> = {
-  'large-triangle': 360,    // Žiadna symetria (len 360°)
-  'medium-triangle': 360,   // Žiadna symetria
-  'small-triangle': 360,    // Žiadna symetria
-  'square': 90,             // Symetria každých 90° (0°, 90°, 180°, 270° sú rovnaké)
-  'parallelogram': 180,     // Symetria každých 180° (0° = 180°, 90° = 270°)
-};
-
-// Rozmer kúskov (pre výpočet offsetu)
-const PIECE_SIZES: Record<PieceType, { width: number; height: number }> = {
-  'large-triangle': { width: 150, height: 150 },
-  'medium-triangle': { width: 107, height: 107 },
-  'small-triangle': { width: 75, height: 75 },
-  'square': { width: 75, height: 75 },
-  'parallelogram': { width: 160, height: 54 },
+  'large-triangle': 360,    // Žiadna symetria
+  'medium-triangle': 360,   
+  'small-triangle': 360,    
+  'square': 90,             // 0°, 90°, 180°, 270°
+  'parallelogram': 180,     // 0°, 180°
 };
 
 interface GameContextType {
@@ -116,49 +107,78 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }));
   };
 
-  // Funkcia na výpočet pozície ľavého horného rohu pri danej rotácii
+  // Zistí či je rotácia "diagonálna" (45°, 135°, 225°, 315°)
+  const isDiagonalRotation = (rotation: number): boolean => {
+    const normalized = ((rotation % 360) + 360) % 360;
+    const mod = normalized % 90;
+    return Math.abs(mod - 45) < 1; // Presne 45°
+  };
+
+  // Vypočítaj pozíciu ľavého horného rohu pri danej rotácii
   const getPositionForRotation = (
     basePosition: { x: number; y: number },
     baseRotation: number,
     actualRotation: number,
     pieceType: PieceType
   ): { x: number; y: number } => {
-    const size = PIECE_SIZES[pieceType];
     const normalizeRot = (rot: number) => ((rot % 360) + 360) % 360;
     
     const base = normalizeRot(baseRotation);
     const actual = normalizeRot(actualRotation);
     
-    // Vypočítaj koľko 90° krokov je rozdiel
-    const diff = normalizeRot(actual - base);
-    const steps90 = Math.round(diff / 90) % 4;
+    const baseDiagonal = isDiagonalRotation(base);
+    const actualDiagonal = isDiagonalRotation(actual);
     
     let offsetX = 0;
     let offsetY = 0;
     
-    // Pre štvorec (75x75) - každý 90° krok posúva ľavý horný roh
+    // Pre štvorec
     if (pieceType === 'square') {
-      if (steps90 === 1) {
-        // 90° rotácia: ľavý horný roh sa posunie doprava o výšku
-        offsetX = size.width;
-        offsetY = 0;
-      } else if (steps90 === 2) {
-        // 180° rotácia: posun doprava aj dole
-        offsetX = size.width;
-        offsetY = size.height;
-      } else if (steps90 === 3) {
-        // 270° rotácia: posun doprava
-        offsetX = 0;
-        offsetY = size.height;
+      const halfDiagonal = 75 * Math.sqrt(2) / 2; // ≈ 53.03
+      
+      if (baseDiagonal && actualDiagonal) {
+        // Obe diagonálne (45° → 135°, 225°, 315°)
+        const diff = normalizeRot(actual - base);
+        if (Math.abs(diff - 90) < 1) {
+          offsetX = halfDiagonal;
+          offsetY = halfDiagonal;
+        } else if (Math.abs(diff - 180) < 1) {
+          offsetX = 0;
+          offsetY = 2 * halfDiagonal;
+        } else if (Math.abs(diff - 270) < 1) {
+          offsetX = -halfDiagonal;
+          offsetY = halfDiagonal;
+        }
+      } else if (!baseDiagonal && !actualDiagonal) {
+        // Obe rohové (0° → 90°, 180°, 270°)
+        const diff = normalizeRot(actual - base);
+        if (Math.abs(diff - 90) < 1) {
+          offsetX = 0;
+          offsetY = 75;
+        } else if (Math.abs(diff - 180) < 1) {
+          offsetX = 75;
+          offsetY = 75;
+        } else if (Math.abs(diff - 270) < 1) {
+          offsetX = 75;
+          offsetY = 0;
+        }
+      } else if (!baseDiagonal && actualDiagonal) {
+        // Z rohovej na diagonálnu (0° → 45°, 135°, ...)
+        offsetX = halfDiagonal;
+        offsetY = halfDiagonal;
+      } else {
+        // Z diagonálnej na rohovú (45° → 0°, 90°, ...)
+        offsetX = -halfDiagonal;
+        offsetY = -halfDiagonal;
       }
     }
     
-    // Pre kosoštvorec - len 180° symetria
+    // Pre kosoštvorec (len 180° symetria, bez diagonálnych)
     if (pieceType === 'parallelogram') {
-      if (steps90 === 2 || steps90 === -2) {
-        // 180° rotácia
-        offsetX = size.width;
-        offsetY = size.height;
+      const diff = normalizeRot(actual - base);
+      if (Math.abs(diff - 180) < 1) {
+        offsetX = 160;
+        offsetY = 54;
       }
     }
     
@@ -168,7 +188,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     };
   };
 
-  // Funkcia na kontrolu či rotácie sú symetrické + kontrola pozície s offsetom
+  // Kontrola či pieces matchujú (pozícia + rotácia so symetriou)
   const piecesMatch = (
     userPiece: { id: string; type: PieceType; position: { x: number; y: number }; rotation: number; color: string },
     targetPiece: { id: string; type: PieceType; position: { x: number; y: number }; rotation: number; color: string },
@@ -186,14 +206,11 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const altDiff = 360 - diff;
     const minDiff = Math.min(diff, altDiff);
     
-    const ROTATION_TOLERANCE = 15;
-    
-    // Skontroluj všetky symetrické rotácie
+    // BEZ TOLERANCIE - musí byť presne násobok symetrie
     for (let i = 0; i * symmetry <= 360; i++) {
       const symmetricAngle = i * symmetry;
-      if (Math.abs(minDiff - symmetricAngle) < ROTATION_TOLERANCE) {
-        // Rotácia sedí! Teraz skontroluj pozíciu
-        // Vypočítaj kde by mal byť ľavý horný roh pri user rotácii
+      if (Math.abs(minDiff - symmetricAngle) < 1) { // < 1° tolerancia pre floating point
+        // Rotácia sedí! Skontroluj pozíciu
         const baseTargetPos = {
           x: boardCenterX + (targetPiece.position.x - 250),
           y: boardCenterY + (targetPiece.position.y - 250)
@@ -222,7 +239,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
     const boardCenterX = 500;
     const boardCenterY = 325;
-    const POSITION_TOLERANCE = 30;
+    const POSITION_TOLERANCE = 10;  // ← ZMENENÉ z 30 na 10
 
     const occupiedTargets = new Set<number>();
     const correctUserPieces = new Set<string>();
@@ -238,7 +255,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       });
     });
 
-    for (const userPiece of gameState.pieces) {
+    // NÁHODNE PREMIEŠAJ kúsky pred výberom
+    const shuffledPieces = [...gameState.pieces].sort(() => Math.random() - 0.5);
+
+    for (const userPiece of shuffledPieces) {
       if (correctUserPieces.has(userPiece.id)) {
         continue;
       }
@@ -272,7 +292,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const checkCompletion = (): boolean => {
     if (!currentLevel) return false;
 
-    const POSITION_TOLERANCE = 30;
+    const POSITION_TOLERANCE = 10;  // ← ZMENENÉ z 30 na 10
     const boardCenterX = 500;
     const boardCenterY = 325;
 
