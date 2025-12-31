@@ -5,6 +5,7 @@ interface TangramPieceProps {
   piece: TangramPieceType;
   onDrag: (id: string, position: { x: number; y: number }) => void;
   onRotate: (id: string) => void;
+  scale: number;
 }
 
 const PIECE_PATHS: Record<PieceType, string> = {
@@ -27,11 +28,13 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
   piece,
   onDrag,
   onRotate,
+  scale,
 }) => {
   const [dragging, setDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const pieceRef = useRef<SVGSVGElement>(null);
-  const size = PIECE_SIZES[piece.type];
+  const baseSize = PIECE_SIZES[piece.type];
+  const size = baseSize * scale;
 
   const handleStart = (clientX: number, clientY: number) => {
     setDragging(true);
@@ -51,8 +54,9 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
     if (!gameBoard) return;
 
     const boardRect = gameBoard.getBoundingClientRect();
-    const newX = clientX - boardRect.left - dragOffset.x;
-    const newY = clientY - boardRect.top - dragOffset.y;
+    
+    const newX = (clientX - boardRect.left - dragOffset.x) / scale;
+    const newY = (clientY - boardRect.top - dragOffset.y) / scale;
 
     onDrag(piece.id, { x: newX, y: newY });
   };
@@ -93,7 +97,7 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
         window.removeEventListener('touchend', handleEnd);
       };
     }
-  }, [dragging, dragOffset]);
+  }, [dragging, dragOffset, scale]);
 
   const handleDoubleClick = () => {
     onRotate(piece.id);
@@ -104,11 +108,11 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
       ref={pieceRef}
       width={size}
       height={size}
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox={`0 0 ${baseSize} ${baseSize}`}
       style={{
         position: 'absolute',
-        left: `${piece.position.x}px`,
-        top: `${piece.position.y}px`,
+        left: `${piece.position.x * scale}px`,
+        top: `${piece.position.y * scale}px`,
         cursor: dragging ? 'grabbing' : 'grab',
         zIndex: dragging ? 1000 : 10,
         transition: dragging ? 'none' : 'all 0.1s ease-out',
@@ -119,18 +123,19 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
         pointerEvents: 'none',
       }}
     >
-      {/* Rotácia okolo ľavého horného rohu (0,0) */}
       <g transform={`rotate(${piece.rotation})`}>
         <path
           d={PIECE_PATHS[piece.type]}
           fill={piece.color}
           stroke="#333"
-          strokeWidth="2"
+          strokeWidth={2 / scale}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onDoubleClick={handleDoubleClick}
           style={{
-            filter: dragging ? 'brightness(1.1) drop-shadow(0 4px 8px rgba(0,0,0,0.3))' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+            filter: dragging 
+              ? 'brightness(1.1) drop-shadow(0 4px 8px rgba(0,0,0,0.3))' 
+              : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
             pointerEvents: 'auto',
             cursor: dragging ? 'grabbing' : 'grab',
           }}

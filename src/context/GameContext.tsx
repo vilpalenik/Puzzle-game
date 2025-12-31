@@ -7,16 +7,18 @@ const levelsData = levelsDataRaw as LevelsData;
 
 // Symetria pre každý typ kúsku (v stupňoch)
 const PIECE_SYMMETRY: Record<PieceType, number> = {
-  'large-triangle': 360,    // Žiadna symetria
-  'medium-triangle': 360,   
-  'small-triangle': 360,    
-  'square': 90,             // 0°, 90°, 180°, 270°
-  'parallelogram': 180,     // 0°, 180°
+  'large-triangle': 360,
+  'medium-triangle': 360,
+  'small-triangle': 360,
+  'square': 90,
+  'parallelogram': 180,
 };
 
 interface GameContextType {
   gameState: GameState;
   currentLevel: Level | null;
+  scale: number;
+  setScale: (scale: number) => void;
   updatePiecePosition: (id: string, position: { x: number; y: number }) => void;
   rotatePiece: (id: string) => void;
   checkCompletion: () => boolean;
@@ -40,6 +42,8 @@ interface GameProviderProps {
 }
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
+  const [scale, setScale] = useState(1.0);
+
   const [gameState, setGameState] = useState<GameState>(() => {
     const saved = localStorage.getItem('tangram-progress');
     if (saved) {
@@ -64,7 +68,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     if (level) {
       setCurrentLevel(level);
       
-      const positions = [
+      const basePositions = [
         { x: 80, y: 100 },
         { x: 80, y: 250 },
         { x: 80, y: 400 },
@@ -76,7 +80,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
       const initialPieces = level.targetShape.pieces.map((piece, index) => ({
         ...piece,
-        position: positions[index] || { x: 100 + index * 80, y: 500 },
+        position: basePositions[index] || { x: 100 + index * 80, y: 500 },
         rotation: 0,
       }));
       
@@ -107,14 +111,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }));
   };
 
-  // Zistí či je rotácia "diagonálna" (45°, 135°, 225°, 315°)
   const isDiagonalRotation = (rotation: number): boolean => {
     const normalized = ((rotation % 360) + 360) % 360;
     const mod = normalized % 90;
-    return Math.abs(mod - 45) < 1; // Presne 45°
+    return Math.abs(mod - 45) < 1;
   };
 
-  // Vypočítaj pozíciu ľavého horného rohu pri danej rotácii
   const getPositionForRotation = (
     basePosition: { x: number; y: number },
     baseRotation: number,
@@ -132,12 +134,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     let offsetX = 0;
     let offsetY = 0;
     
-    // Pre štvorec
     if (pieceType === 'square') {
-      const halfDiagonal = 75 * Math.sqrt(2) / 2; // ≈ 53.03
+      const halfDiagonal = 75 * Math.sqrt(2) / 2;
       
       if (baseDiagonal && actualDiagonal) {
-        // Obe diagonálne (45° → 135°, 225°, 315°)
         const diff = normalizeRot(actual - base);
         if (Math.abs(diff - 90) < 1) {
           offsetX = halfDiagonal;
@@ -150,7 +150,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
           offsetY = halfDiagonal;
         }
       } else if (!baseDiagonal && !actualDiagonal) {
-        // Obe rohové (0° → 90°, 180°, 270°)
         const diff = normalizeRot(actual - base);
         if (Math.abs(diff - 90) < 1) {
           offsetX = 0;
@@ -163,17 +162,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
           offsetY = 0;
         }
       } else if (!baseDiagonal && actualDiagonal) {
-        // Z rohovej na diagonálnu (0° → 45°, 135°, ...)
         offsetX = halfDiagonal;
         offsetY = halfDiagonal;
       } else {
-        // Z diagonálnej na rohovú (45° → 0°, 90°, ...)
         offsetX = -halfDiagonal;
         offsetY = -halfDiagonal;
       }
     }
     
-    // Pre kosoštvorec (len 180° symetria, bez diagonálnych)
     if (pieceType === 'parallelogram') {
       const diff = normalizeRot(actual - base);
       if (Math.abs(diff - 180) < 1) {
@@ -188,7 +184,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     };
   };
 
-  // Kontrola či pieces matchujú (pozícia + rotácia so symetriou)
   const piecesMatch = (
     userPiece: { id: string; type: PieceType; position: { x: number; y: number }; rotation: number; color: string },
     targetPiece: { id: string; type: PieceType; position: { x: number; y: number }; rotation: number; color: string },
@@ -206,11 +201,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const altDiff = 360 - diff;
     const minDiff = Math.min(diff, altDiff);
     
-    // BEZ TOLERANCIE - musí byť presne násobok symetrie
     for (let i = 0; i * symmetry <= 360; i++) {
       const symmetricAngle = i * symmetry;
-      if (Math.abs(minDiff - symmetricAngle) < 1) { // < 1° tolerancia pre floating point
-        // Rotácia sedí! Skontroluj pozíciu
+      if (Math.abs(minDiff - symmetricAngle) < 1) {
         const baseTargetPos = {
           x: boardCenterX + (targetPiece.position.x - 250),
           y: boardCenterY + (targetPiece.position.y - 250)
@@ -239,7 +232,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
     const boardCenterX = 500;
     const boardCenterY = 325;
-    const POSITION_TOLERANCE = 10;  // ← ZMENENÉ z 30 na 10
+    const POSITION_TOLERANCE = 10;
 
     const occupiedTargets = new Set<number>();
     const correctUserPieces = new Set<string>();
@@ -255,7 +248,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       });
     });
 
-    // NÁHODNE PREMIEŠAJ kúsky pred výberom
     const shuffledPieces = [...gameState.pieces].sort(() => Math.random() - 0.5);
 
     for (const userPiece of shuffledPieces) {
@@ -292,7 +284,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const checkCompletion = (): boolean => {
     if (!currentLevel) return false;
 
-    const POSITION_TOLERANCE = 10;  // ← ZMENENÉ z 30 na 10
+    const POSITION_TOLERANCE = 10;
     const boardCenterX = 500;
     const boardCenterY = 325;
 
@@ -357,6 +349,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       value={{
         gameState,
         currentLevel,
+        scale,
+        setScale,
         updatePiecePosition,
         rotatePiece,
         checkCompletion,

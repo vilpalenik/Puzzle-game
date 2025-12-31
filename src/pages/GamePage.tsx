@@ -3,14 +3,20 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { TangramPiece } from '../components/TangramPiece';
 import { TargetShape } from '../components/TargetShape';
+import { useWindowSize } from '../hooks/useWindowSize';
+import { getScale } from '../utils/scaleHelper';
 import './GamePage.css';
 
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const windowSize = useWindowSize();
+  
   const {
     gameState,
     currentLevel,
+    scale,
+    setScale,
     updatePiecePosition,
     rotatePiece,
     checkCompletion,
@@ -20,6 +26,12 @@ const GamePage: React.FC = () => {
   } = useGame();
 
   const [showCelebration, setShowCelebration] = useState(false);
+
+  // Aktualizuj scale pri zmene veľkosti okna
+  useEffect(() => {
+    const newScale = getScale(windowSize.width);
+    setScale(newScale);
+  }, [windowSize.width, setScale]);
 
   useEffect(() => {
     if (id) {
@@ -81,19 +93,30 @@ const GamePage: React.FC = () => {
           </div>
         </div>
 
-        {/* HLAVNÁ HRACIA PLOCHA */}
-        <div id="game-board" className="game-board-single">
-          
-          {/* ČIERNA SILUETA v strede */}
-          <TargetShape targetShape={currentLevel.targetShape} />
+        {/* HRACIA PLOCHA */}
+        <div 
+          id="game-board" 
+          className="game-board-single"
+          style={{
+            width: `${1000 * scale}px`,
+            height: `${650 * scale}px`,
+            transform: `scale(1)`,
+          }}
+        >
+          {/* ČIERNA SILUETA */}
+          <TargetShape 
+            targetShape={currentLevel.targetShape}
+            scale={scale}
+          />
 
-          {/* FAREBNÉ KÚSKY ktoré ťaháš */}
+          {/* FAREBNÉ KÚSKY */}
           {gameState.pieces.map((piece) => (
             <TangramPiece
               key={piece.id}
               piece={piece}
               onDrag={updatePiecePosition}
               onRotate={rotatePiece}
+              scale={scale}
             />
           ))}
         </div>

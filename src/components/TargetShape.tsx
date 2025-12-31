@@ -3,6 +3,7 @@ import type { TargetShape as TargetShapeType, PieceType } from '../types/game';
 
 interface TargetShapeProps {
   targetShape: TargetShapeType;
+  scale: number;
 }
 
 const PIECE_PATHS: Record<PieceType, string> = {
@@ -13,7 +14,16 @@ const PIECE_PATHS: Record<PieceType, string> = {
   'parallelogram': 'M 0,0 L 106.066,0 L 159.099,53.033 L 53.033,53.033 Z',
 };
 
-export const TargetShape: React.FC<TargetShapeProps> = ({ targetShape }) => {
+export const TargetShape: React.FC<TargetShapeProps> = ({ 
+  targetShape,
+  scale
+}) => {
+  const baseWidth = targetShape.width;
+  const baseHeight = targetShape.height;
+  
+  const scaledWidth = baseWidth * scale;
+  const scaledHeight = baseHeight * scale;
+
   return (
     <div style={{ 
       position: 'absolute',
@@ -24,9 +34,9 @@ export const TargetShape: React.FC<TargetShapeProps> = ({ targetShape }) => {
       zIndex: 0,
     }}>
       <svg
-        width={targetShape.width}
-        height={targetShape.height}
-        viewBox={`0 0 ${targetShape.width} ${targetShape.height}`}
+        width={scaledWidth}
+        height={scaledHeight}
+        viewBox={`0 0 ${baseWidth} ${baseHeight}`}
         style={{ 
           display: 'block',
           shapeRendering: 'crispEdges'
