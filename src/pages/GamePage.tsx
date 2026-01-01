@@ -7,6 +7,13 @@ import { useWindowSize } from '../hooks/useWindowSize';
 import { getScale } from '../utils/scaleHelper';
 import './GamePage.css';
 
+const formatTime = (seconds: number | null | undefined) => {
+  if (seconds === null || seconds === undefined) return "--:--";
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+};
+
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -16,6 +23,7 @@ const GamePage: React.FC = () => {
     gameState,
     currentLevel,
     scale,
+    currentTime,
     setScale,
     updatePiecePosition,
     rotatePiece,
@@ -24,6 +32,9 @@ const GamePage: React.FC = () => {
     loadLevel,
     showHint,
   } = useGame();
+
+  // Získame štatistiky pre aktuálny level
+  const levelStats = currentLevel ? gameState.stats[currentLevel.id] : null;
 
   const [showCelebration, setShowCelebration] = useState(false);
 
@@ -81,6 +92,21 @@ const GamePage: React.FC = () => {
             <span className={`badge-${currentLevel.difficulty.toLowerCase()}`}>
               {currentLevel.difficulty}
             </span>
+          </div>
+
+          <div className="game-stats-hud">
+            <div className="stat-item">
+              <span className="stat-label">Aktuálny čas</span>
+              <span className="stat-value timer-running">{formatTime(currentTime)}</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-label">Najlepší čas</span>
+              <span className="stat-value">{formatTime(levelStats?.bestTime)}</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-label">Pokus</span>
+              <span className="stat-value">#{levelStats?.attempts || 1}</span>
+            </div>
           </div>
 
           <div className="game-controls">

@@ -17,6 +17,7 @@ const PIECE_SYMMETRY: Record<PieceType, number> = {
 interface GameContextType {
   gameState: GameState;
   currentLevel: Level | null;
+  currentTime: number;
   scale: number;
   setScale: (scale: number) => void;
   updatePiecePosition: (id: string, position: { x: number; y: number }) => void;
@@ -54,6 +55,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       pieces: [],
       completedLevels: [],
       isCompleted: false,
+      stats: {},
     };
   });
 
@@ -63,10 +65,31 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     localStorage.setItem('tangram-progress', JSON.stringify(gameState));
   }, [gameState]);
 
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isActive, setIsActive] = useState<boolean>(false);
+
+  // Efekt pre bežiaci čas
+  useEffect(() => {
+    let interval: any;
+    if (isActive && !gameState.isCompleted) {
+      interval = setInterval(() => {
+        setCurrentTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isActive, gameState.isCompleted]);
+
   const loadLevel = (levelId: number) => {
     const level = levelsData.levels.find(l => l.id === levelId);
     if (level) {
       setCurrentLevel(level);
+      setCurrentTime(0);     // Reset času
+      setIsActive(true);      // Spustenie stopiek
+
+      // Získame existujúce štatistiky alebo vytvoríme nové
+      const currentStats = gameState.stats[levelId] || { bestTime: null, attempts: 0 };
       
       const basePositions = [
         { x: 80, y: 100 },
@@ -88,7 +111,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         ...prev, 
         currentLevel: levelId,
         pieces: initialPieces, 
-        isCompleted: false 
+        isCompleted: false,
+        stats: {
+        ...prev.stats,
+        [levelId]: { 
+          ...currentStats, 
+          attempts: currentStats.attempts + 1 // Zvýšime počet pokusov
+        }
+      } 
       }));
     }
   };
@@ -230,6 +260,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const showHint = () => {
     if (!currentLevel) return;
 
+    // 1. PRIDANIE PENALIZÁCIE 30 SEKÚND
+    setCurrentTime(prev => prev + 30);
+
     const boardCenterX = 500;
     const boardCenterY = 325;
     const POSITION_TOLERANCE = 10;
@@ -308,10 +341,25 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     });
 
     if (allPiecesCorrect && !gameState.isCompleted) {
+      setIsActive(false); // Zastavíme čas pri výhre
+
+      const levelId = currentLevel!.id;
+      const currentStats = gameState.stats[levelId];
+    
+      // Výpočet nového najlepšieho času
+      const oldBest = currentStats?.bestTime;
+      const newBest = (oldBest === null || oldBest === undefined || currentTime < oldBest) 
+        ? currentTime 
+        : oldBest;
+
       setGameState(prev => ({
         ...prev,
         isCompleted: true,
         completedLevels: [...new Set([...prev.completedLevels, prev.currentLevel])],
+        stats: {
+        ...prev.stats,
+        [levelId]: { ...currentStats, bestTime: newBest }
+      }
       }));
     }
 
@@ -320,6 +368,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   const resetLevel = () => {
     if (currentLevel) {
+      // 1. RESET STOPIEK NA NULU A ICH SPUSTENIE
+      setCurrentTime(0);
+      setIsActive(true);
+
       const positions = [
         { x: 80, y: 100 },
         { x: 80, y: 250 },
@@ -336,14 +388,28 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         rotation: 0,
       }));
       
-      setGameState(prev => ({
-        ...prev,
-        pieces: initialPieces,
-        isCompleted: false,
-      }));
+      setGameState(prev => {
+        const levelId = currentLevel.id;
+        const currentStats = prev.stats[levelId] || { bestTime: null, attempts: 0 };
+        
+        return {
+          ...prev,
+          pieces: initialPieces,
+          isCompleted: false,
+          stats: {
+            ...prev.stats,
+            [levelId]: { 
+              ...currentStats, 
+              attempts: currentStats.attempts + 1 // Pričítame nový pokus
+            }
+          }
+        };
+      });
     }
   };
 
+
+  
   return (
     <GameContext.Provider
       value={{
@@ -357,7 +423,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         resetLevel,
         loadLevel,
         showHint,
-      }}
+        currentTime
+      }}  
     >
       {children}
     </GameContext.Provider>

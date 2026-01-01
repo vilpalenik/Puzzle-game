@@ -35,9 +35,19 @@ export interface LevelsData {
   levels: Level[];
 }
 
+export interface LevelStats {
+  bestTime: number | null;
+  attempts: number;
+}
+
 export interface GameState {
   currentLevel: number;
   pieces: TangramPiece[];
   completedLevels: number[];
   isCompleted: boolean;
+  // Nové pole pre štatistiky: kľúčom je ID levelu
+  stats: Record<number, LevelStats>;
 }
+
+
+
