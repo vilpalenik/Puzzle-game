@@ -364,7 +364,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
           Math.abs(userPiece.position.y - expectedPos.y) < positionTolerance;
         
         if (positionMatch) {
-          console.log(`Parallelogram match! Target: ${targetNorm}°, User: ${userNorm}°, Diff: ${minDiff}°`);
           return true;
         }
       }

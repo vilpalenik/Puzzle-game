@@ -1,0 +1,303 @@
+.difficulty-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff, #e0e7ff, #fce7f3);
+  padding: 24px;
+}
+
+.difficulty-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.difficulty-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.back-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: white;
+  color: #475569;
+  border-radius: 9999px;
+  font-weight: bold;
+  font-size: 18px;
+  text-decoration: none;
+  transition: box-shadow 0.3s ease;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 32px;
+}
+
+.back-btn:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.difficulty-title {
+  font-size: 48px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.title-gradient {
+  background: linear-gradient(to right, #0284c7, #d946ef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.difficulty-subtitle {
+  color: #475569;
+  font-size: 18px;
+}
+
+.difficulties-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.difficulty-card-wrapper {
+  display: flex;
+}
+
+.difficulty-card {
+  width: 100%;
+  padding: 40px 32px;
+  border-radius: 24px;
+  background: white;
+  text-align: center;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.difficulty-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.difficulty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.difficulty-name {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+.difficulty-description {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.difficulty-progress {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #10b981, #059669);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 600;
+  margin: 0;
+}
+
+.play-button {
+  padding: 12px 32px;
+  background: linear-gradient(to right, #0ea5e9, #6366f1);
+  color: white;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.difficulty-card:hover .play-button {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(14, 165, 233, 0.3);
+}
+
+/* Obtiažnosti farby */
+.difficulty-card-easy {
+  border-color: #86efac;
+}
+
+.difficulty-card-easy:hover {
+  border-color: #4ade80;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+}
+
+.difficulty-card-medium {
+  border-color: #fcd34d;
+}
+
+.difficulty-card-medium:hover {
+  border-color: #fbbf24;
+  background: linear-gradient(135deg, #fefce8, #fef3c7);
+}
+
+.difficulty-card-hard {
+  border-color: #fb6b7d;
+}
+
+.difficulty-card-hard:hover {
+  border-color: #f43f5e;
+  background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+}
+
+/* Dokončené */
+.difficulty-completed {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.completed-badge-diff {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  animation: completedPulse 2s ease-in-out infinite;
+}
+
+.completed-icon {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+@keyframes completedPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Zamknuté */
+.difficulty-card-locked {
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: #9ca3af;
+}
+
+.difficulty-card-locked:hover {
+  transform: none;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+}
+
+.lock-icon-diff {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.difficulty-name-locked {
+  opacity: 0.5;
+}
+
+/* Banner po dokončení všetkého */
+.all-completed-banner {
+  padding: 24px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+  animation: completedPulse 2s ease-in-out infinite;
+}
+
+.all-completed-text {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Responzívne */
+@media (max-width: 1023px) {
+  .difficulties-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .difficulty-card {
+    padding: 32px 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .difficulty-container {
+    padding: 16px;
+  }
+
+  .difficulty-header {
+    margin-bottom: 32px;
+  }
+
+  .difficulty-title {
+    font-size: 36px;
+  }
+
+  .difficulty-subtitle {
+    font-size: 16px;
+  }
+
+  .difficulty-icon {
+    font-size: 48px;
+  }
+
+  .difficulty-name {
+    font-size: 24px;
+  }
+
+  .difficulty-description {
+    font-size: 14px;
+  }
+
+  .completed-badge-diff {
+    width: 40px;
+    height: 40px;
+  }
+
+  .completed-icon {
+    font-size: 24px;
+  }
+
+  .all-completed-text {
+    font-size: 16px;
+  }
+}

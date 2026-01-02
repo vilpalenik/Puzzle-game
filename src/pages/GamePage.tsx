@@ -11,7 +11,6 @@ const formatTime = (seconds: number | null | undefined) => {
   const s = seconds % 60;
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 };
-
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -26,6 +25,7 @@ const GamePage: React.FC = () => {
     resetLevel,
     loadLevel,
     showHint,
+    getUnlockedDifficulties,
   } = useGame();
 
   const levelStats = currentLevel ? gameState.stats[currentLevel.id] : null;
@@ -67,7 +67,6 @@ const GamePage: React.FC = () => {
       const completed = checkCompletion();
       if (completed) {
         setShowCelebration(true);
-        // ODSTRÁNENÝ setTimeout - okno sa samo nezavrie
       }
     }
   }, [gameState.pieces]);
@@ -83,12 +82,87 @@ const GamePage: React.FC = () => {
   }
 
   const handleNextLevel = () => {
-    const nextId = currentLevel.id + 1;
-    setShowCelebration(false); // Skryť celebration pred prechodom
-    if (nextId <= 9) {
-      navigate(`/game/${nextId}`);
+    setShowCelebration(false); // skryt celebration pred prechodom
+    
+    // zisti obtiažnosť aktuálneho levelu
+    const difficulty = currentLevel.difficulty;
+    
+    // vsetky levely
+    const allLevels = [
+      { id: 1, difficulty: 'Easy'},
+      { id: 2, difficulty: 'Easy'},
+      { id: 3, difficulty: 'Easy'},
+      { id: 4, difficulty: 'Medium'},
+      { id: 5, difficulty: 'Medium'},
+      { id: 6, difficulty: 'Medium'},
+      { id: 7, difficulty: 'Hard'},
+      { id: 8, difficulty: 'Hard'},
+      { id: 9, difficulty: 'Hard'},
+    ];
+    
+    // Levely tej istej obtiažnosti
+    const sameDifficultyLevels = allLevels.filter(
+      l => l.difficulty === difficulty
+    );
+    
+    // Nevyriešené levely z tej istej obtiažnosti
+    const incompleteLevels = sameDifficultyLevels.filter(
+      l => !gameState.completedLevels.includes(l.id)
+    );
+    
+    if (incompleteLevels.length > 0) {
+      // Náhodne vyber jeden nevyriešený level
+      const randomLevel = incompleteLevels[Math.floor(Math.random() * incompleteLevels.length)];
+      navigate(`/game/${randomLevel.id}`);
     } else {
-      navigate('/levels');
+      // Všetky levely tejto obtiažnosti sú dokončené
+      // Skontroluj či existuje ďalšia odomknutá obtiažnosť
+      const unlockedDifficulties = getUnlockedDifficulties();
+      
+      if (difficulty === 'Easy' && unlockedDifficulties.includes('Medium')) {
+        // Easy dokončené, choď na Medium
+        navigate('/difficulties');
+      } else if (difficulty === 'Medium' && unlockedDifficulties.includes('Hard')) {
+        // Medium dokončené, choď na Hard
+        navigate('/difficulties');
+      } else {
+        // Všetko dokončené
+        navigate('/difficulties');
+      }
+    }
+  };
+
+  const handleBackToLevels = () => {
+    // Zisti obtiažnosť aktuálneho levelu
+    const difficulty = currentLevel.difficulty.toLowerCase();
+    
+    // Zisti či sú všetky levely tejto obtiažnosti dokončené
+    const allLevels = [
+      { id: 1, difficulty: 'Easy'},
+      { id: 2, difficulty: 'Easy'},
+      { id: 3, difficulty: 'Easy'},
+      { id: 4, difficulty: 'Medium'},
+      { id: 5, difficulty: 'Medium'},
+      { id: 6, difficulty: 'Medium'},
+      { id: 7, difficulty: 'Hard'},
+      { id: 8, difficulty: 'Hard'},
+      { id: 9, difficulty: 'Hard'},
+    ];
+    
+    const levelsOfThisDifficulty = allLevels.filter(
+      l => l.difficulty.toLowerCase() === difficulty
+    );
+    
+    const completedCount = levelsOfThisDifficulty.filter(
+      l => gameState.completedLevels.includes(l.id)
+    ).length;
+    
+    // Ak sú všetky dokončené, choď na výber levelov
+    if (completedCount === levelsOfThisDifficulty.length) {
+      navigate(`/levels/${difficulty}`);
+    } else {
+      // Inak choď na výber obtiažnosti
+      navigate('/difficulties');
     }
   };
 
@@ -98,7 +172,9 @@ const GamePage: React.FC = () => {
         
         {/* Top Bar */}
         <div className="game-top-bar">
-          <Link to="/levels" className="back-link">← Levely</Link>
+          <button onClick={handleBackToLevels} className="back-link">
+            ← Späť
+          </button>
           
           <div className="game-title-center">
             <h1>Level {currentLevel.id}: {currentLevel.name}</h1>
@@ -170,7 +246,9 @@ const GamePage: React.FC = () => {
 
         {/* Bottom buttons */}
         <div className="game-actions">
-          <Link to="/levels" className="btn-secondary">Späť na levely</Link>
+          <button onClick={handleBackToLevels} className="btn-secondary">
+            Späť na levely
+          </button>
           <Link to="/" className="btn-tertiary">Menu</Link>
         </div>
       </div>
@@ -187,7 +265,9 @@ const GamePage: React.FC = () => {
                   Ďalší level →
                 </button>
               ) : (
-                <Link to="/levels" className="btn-next">Späť na levely</Link>
+                <button onClick={() => navigate('/difficulties')} className="btn-next">
+                  Späť na obtiažnosti
+                </button>
               )}
               <button onClick={() => setShowCelebration(false)} className="btn-continue">
                 Pokračovať

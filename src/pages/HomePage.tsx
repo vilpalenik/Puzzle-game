@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
         <p className="home-description">- sem by mohol ísť krátky popis -</p>
 
         <div className="home-buttons">
-          <Link to="/levels" className="btn btn-primary"> 
+          <Link to="/difficulties" className="btn btn-primary"> 
             Play Now
           </Link>
           <Link to="/controls" className="btn btn-secondary">
