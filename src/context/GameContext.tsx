@@ -24,6 +24,8 @@ interface GameContextType {
   resetLevel: () => void;
   loadLevel: (levelId: number) => void;
   showHint: () => void;
+  getUnlockedDifficulties: () => string[]; // NOVÁ FUNKCIA
+  isLevelUnlocked: (levelId: number) => boolean; // NOVÁ FUNKCIA
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -64,7 +66,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isActive, setIsActive] = useState<boolean>(false);
 
-  // Efekt pre bežiaci čas
+  // casovac hry
   useEffect(() => {
     let interval: any;
     if (isActive && !gameState.isCompleted) {
@@ -76,6 +78,59 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }
     return () => clearInterval(interval);
   }, [isActive, gameState.isCompleted]);
+
+  const getUnlockedDifficulties = (): string[] => {
+    const easyLevels = levelsData.levels.filter(l => l.difficulty === 'Easy');
+    const mediumLevels = levelsData.levels.filter(l => l.difficulty === 'Medium');
+    const hardLevels = levelsData.levels.filter(l => l.difficulty === 'Hard');
+    
+    const completedEasy = easyLevels.filter(l => 
+      gameState.completedLevels.includes(l.id)
+    ).length;
+    
+    const completedMedium = mediumLevels.filter(l => 
+      gameState.completedLevels.includes(l.id)
+    ).length;
+    
+    const completedHard = hardLevels.filter(l => 
+      gameState.completedLevels.includes(l.id)
+    ).length;
+    
+    const unlocked = ['Easy']; // easy je vzdy odomknuta
+    
+    // ak su easy dokoncene, odomkni Medium
+    if (completedEasy === easyLevels.length) {
+      unlocked.push('Medium');
+    }
+    
+    // ak su medium dokoncene, odomkni Hard
+    if (completedMedium === mediumLevels.length) {
+      unlocked.push('Hard');
+    }
+    
+    // ak su vsetky Hard dokoncene, odomkni vsetky obtiaznosti
+    if (completedHard === hardLevels.length) {
+      return ['Easy', 'Medium', 'Hard', 'All'];
+    }
+    
+    return unlocked;
+  };
+
+  // kontrola ci je level odomknuty
+  const isLevelUnlocked = (levelId: number): boolean => {
+    const level = levelsData.levels.find(l => l.id === levelId);
+    if (!level) return false;
+    
+    const unlockedDifficulties = getUnlockedDifficulties();
+    
+    // ak je odomknuta vsetka obtiaznost, vrat true
+    if (unlockedDifficulties.includes('All')) {
+      return true;
+    }
+    
+    // inak skontroluj obtiaznost levelu
+    return unlockedDifficulties.includes(level.difficulty);
+  };
 
   const loadLevel = (levelId: number) => {
     const level = levelsData.levels.find(l => l.id === levelId);
@@ -543,6 +598,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         resetLevel,
         loadLevel,
         showHint,
+        getUnlockedDifficulties,
+        isLevelUnlocked,
       }}  
     >
       {children}

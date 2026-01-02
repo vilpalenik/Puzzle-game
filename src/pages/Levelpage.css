@@ -148,9 +148,193 @@
   border-color: #e11d48;
 }
 
-/* ========== RESPONZÍVNE ÚPRAVY ========== */
 
-/* Malé mobily (< 480px) */
+/* Status odomknutia */
+.unlock-status {
+  margin-top: 20px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  border: 2px solid #e0e7ff;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.unlock-text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4f46e5;
+}
+
+.unlock-complete {
+  color: #059669;
+  font-size: 18px;
+}
+
+/* Zamknuté levely */
+.level-card-locked {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.level-card-locked-style {
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
+  border-color: #9ca3af !important;
+  opacity: 0.6;
+  position: relative;
+}
+
+.lock-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.level-number-locked {
+  opacity: 0.5;
+}
+
+.level-card-locked-style:hover {
+  transform: none;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Responzívne úpravy pre unlock status */
+@media (max-width: 767px) {
+  .unlock-status {
+    margin-top: 16px;
+    padding: 12px 16px;
+  }
+
+  .unlock-text {
+    font-size: 14px;
+  }
+
+  .unlock-complete {
+    font-size: 16px;
+  }
+
+  .lock-icon {
+    font-size: 28px;
+  }
+}
+
+/* Dokončené levely */
+.level-card-completed {
+  position: relative;
+  border: 3px solid #10b981 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3) !important;
+}
+
+.completed-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  z-index: 10;
+  animation: completedPulse 2s ease-in-out infinite;
+}
+
+.completed-icon {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.completed-text {
+  font-size: 12px;
+  color: #059669;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
+@keyframes completedPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.6);
+  }
+}
+
+/* Hover efekt pre dokončené levely */
+.level-card-completed:hover {
+  border-color: #059669 !important;
+  transform: translateY(-4px);
+}
+
+.level-card-completed.level-card-hovered {
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Status odomknutia */
+.unlock-status {
+  margin-top: 20px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  border: 2px solid #e0e7ff;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.unlock-text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4f46e5;
+}
+
+.unlock-complete {
+  color: #059669;
+  font-size: 18px;
+}
+
+/* Zamknuté levely */
+.level-card-locked {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.level-card-locked-style {
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
+  border-color: #9ca3af !important;
+  opacity: 0.6;
+  position: relative;
+}
+
+.lock-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.level-number-locked {
+  opacity: 0.5;
+}
+
+.level-card-locked-style:hover {
+  transform: none;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* ========== responzivita ========== */
+
+/* mobily (< 480px) */
 @media (max-width: 479px) {
   .level-container {
     padding: 16px;
@@ -197,9 +381,20 @@
   .star {
     font-size: 24px;
   }
+
+  .completed-badge {
+    width: 32px;
+    height: 32px;
+    top: -6px;
+    right: -6px;
+  }
+
+  .completed-icon {
+    font-size: 18px;
+  }
 }
 
-/* Väčšie mobily (480px - 767px) */
+/* tablety (480px - 767px) */
 @media (min-width: 480px) and (max-width: 767px) {
   .level-container {
     padding: 20px;
@@ -235,6 +430,39 @@
   .star {
     font-size: 26px;
   }
+  
+  .unlock-status {
+    margin-top: 16px;
+    padding: 12px 16px;
+  }
+
+  .unlock-text {
+    font-size: 14px;
+  }
+
+  .unlock-complete {
+    font-size: 16px;
+  }
+
+  .lock-icon {
+    font-size: 28px;
+  }
+
+  .completed-badge {
+    width: 35px;
+    height: 35px;
+    top: -8px;
+    right: -8px;
+  }
+
+  .completed-icon {
+    font-size: 20px;
+  }
+
+  .completed-text {
+    font-size: 10px;
+  }
+
 }
 
 /* Tablety (768px - 1023px) */
