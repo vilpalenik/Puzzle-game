@@ -4,9 +4,12 @@ import './ControlsPage.css';
 
 const ControlsPage: React.FC = () => {
   const controls = [
-    { icon: '🖱️', title: 'Click', description: 'Click on pieces to select and move them' },
-    { icon: '🔄', title: 'Rotate', description: 'Use right-click or R key to rotate pieces' },
-    { icon: '↩️', title: 'Undo', description: 'Press U or click Undo to revert last move' },
+    { icon: '🖱️', title: 'Click and drag', description: 'Click on pieces to select and move them by dragging' },
+    { icon: '🔄', title: 'Rotate', description: 'Use double-click to rotate pieces' },
+    { icon: '↩️', title: 'Reset', description: 'Reset the game by clicking the reset button' },
+    { icon: '✅', title: 'Complete Level', description: 'Finish the level by correctly placing all pieces' },
+    { icon: '💡', title: 'Hint', description: 'Use the hint button to get help with difficult levels' },
+    { icon: '🔥', title: 'Difficulties', description: 'Try different difficulty levels to challenge yourself' },
   ];
 
   const handlePrint = () => {
@@ -33,8 +36,10 @@ const ControlsPage: React.FC = () => {
 
         <div className="description-box">
           <h2>What is SHAPE BUILDER ?</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>  
+            <p>Shape Builder is a minimalist puzzle game that challenges your logic and spatial thinking.
+Manipulate and arrange geometric shapes to recreate specific patterns and complete each level.
+With increasing difficulty and time-based challenges, players can test their precision, speed, and problem-solving skills while striving for the best possible completion time.
+                </p>  
         </div>
         
         <div className="controls-grid">
@@ -48,7 +53,7 @@ const ControlsPage: React.FC = () => {
         </div>
 
         <div className="controls-actions">
-          <Link to="/levels" className="action-btn action-primary">
+          <Link to="/difficulties" className="action-btn action-primary">
             Start Playing
           </Link>
           <Link to="/" className="action-btn action-secondary">

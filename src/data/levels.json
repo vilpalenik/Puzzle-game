@@ -2,7 +2,7 @@
   "levels": [
     {
       "id": 1,
-      "name": "Trojuholník",
+      "name": "Triangle",
       "difficulty": "Easy",
       "targetShape": {
         "width": 500,
@@ -84,7 +84,7 @@
 
     {
       "id": 2,
-      "name": "Kohút",
+      "name": "Rooster",
       "difficulty": "Easy",
       "targetShape": {
         "width": 500,
@@ -166,7 +166,7 @@
 
     {
       "id": 3,
-      "name": "Vrana",
+      "name": "Raven",
       "difficulty": "Easy",
       "targetShape": {
         "width": 500,
@@ -248,7 +248,7 @@
 
     {
       "id": 4,
-      "name": "Stodola",
+      "name": "Barn",
       "difficulty": "Medium",
       "targetShape": {
         "width": 500,
@@ -330,7 +330,7 @@
 
     {
       "id": 5,
-      "name": "Kon",
+      "name": "Horse",
       "difficulty": "Medium",
       "targetShape": {
         "width": 500,
@@ -412,7 +412,7 @@
 
     {
       "id": 6,
-      "name": "Klokan",
+      "name": "Kangaroo",
       "difficulty": "Medium",
       "targetShape": {
         "width": 500,
@@ -494,7 +494,7 @@
 
     {
       "id": 7,
-      "name": "Lev",
+      "name": "Lion",
       "difficulty": "Hard",
       "targetShape": {
         "width": 700,
@@ -646,7 +646,7 @@
 
     {
       "id": 8,
-      "name": "Cyklista",
+      "name": "Cyclist",
       "difficulty": "Hard",
       "targetShape": {
         "width": 700,
@@ -798,7 +798,7 @@
 
     {
       "id": 9,
-      "name": "Mikroskop",
+      "name": "Microscope",
       "difficulty": "Hard",
       "targetShape": {
         "width": 700,

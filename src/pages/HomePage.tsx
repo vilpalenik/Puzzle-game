@@ -13,7 +13,6 @@ const HomePage: React.FC = () => {
         <h2 className="home-subtitle">
           <span className="title-builder">BUILDER</span>
         </h2>
-        <p className="home-description">- sem by mohol ísť krátky popis -</p>
 
         <div className="home-buttons">
           <Link to="/difficulties" className="btn btn-primary"> 

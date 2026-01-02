@@ -173,7 +173,7 @@ const GamePage: React.FC = () => {
         {/* Top Bar */}
         <div className="game-top-bar">
           <button onClick={handleBackToLevels} className="back-link">
-            ← Späť
+            ← Back
           </button>
           
           <div className="game-title-center">
@@ -185,15 +185,15 @@ const GamePage: React.FC = () => {
 
           <div className="game-stats-hud">
             <div className="stat-item">
-              <span className="stat-label">Aktuálny čas</span>
+              <span className="stat-label">Current time </span>
               <span className="stat-value timer-running">{formatTime(currentTime)}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">Najlepší čas</span>
+              <span className="stat-label">Best time</span>
               <span className="stat-value">{formatTime(levelStats?.bestTime)}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-label">Pokus</span>
+              <span className="stat-label">Attempts</span>
               <span className="stat-value">#{levelStats?.attempts || 1}</span>
             </div>
           </div>
@@ -238,16 +238,16 @@ const GamePage: React.FC = () => {
 
         {/* Info text */}
         <div className="game-info">
-          <p>💡 Ťahaj kúsky myšou • Rotuj dvojklikom</p>
+          <p>💡 Drag pieces with mouse or finger • Rotate the shapes by double-clicking</p>
           {gameState.completedLevels.includes(currentLevel.id) && (
-            <p style={{ color: '#4caf50', fontWeight: 'bold' }}>✓ Dokončené!</p>
+            <p style={{ color: '#4caf50', fontWeight: 'bold' }}>✓ Done!</p>
           )}
         </div>
 
         {/* Bottom buttons */}
         <div className="game-actions">
           <button onClick={handleBackToLevels} className="btn-secondary">
-            Späť na levely
+            Back to Levels
           </button>
           <Link to="/" className="btn-tertiary">Menu</Link>
         </div>
@@ -257,20 +257,20 @@ const GamePage: React.FC = () => {
       {showCelebration && (
         <div className="celebration-overlay">
           <div className="celebration-content">
-            <h1>🎉 Výborne! 🎉</h1>
-            <p>Dokončil si level {currentLevel.id}: {currentLevel.name}!</p>
+            <h1>🎉 Good job! 🎉</h1>
+            <p>Level completed! {currentLevel.id}: {currentLevel.name}!</p>
             <div className="celebration-buttons">
               {currentLevel.id < 9 ? (
                 <button onClick={handleNextLevel} className="btn-next">
-                  Ďalší level →
+                  Next level →
                 </button>
               ) : (
                 <button onClick={() => navigate('/difficulties')} className="btn-next">
-                  Späť na obtiažnosti
+                  Back to difficulties
                 </button>
               )}
               <button onClick={() => setShowCelebration(false)} className="btn-continue">
-                Pokračovať
+                continue
               </button>
             </div>
           </div>
