@@ -5,7 +5,7 @@ import levelsDataRaw from '../data/levels.json';
 
 const levelsData = levelsDataRaw as LevelsData;
 
-// Symetria pre každý typ kúsku (v stupňoch)
+// symetrie utvarov
 const PIECE_SYMMETRY: Record<PieceType, number> = {
   'large-triangle': 360,
   'medium-triangle': 360,
@@ -84,33 +84,33 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       setCurrentTime(0);
       setIsActive(true);
 
-      // Bezpečný prístup k stats
+      // nacitanie stats
       const currentStats = (gameState.stats && gameState.stats[levelId]) 
         ? gameState.stats[levelId] 
         : { bestTime: null, attempts: 0 };
       
-      // ROZŠÍRENÉ POZÍCIE PRE VIAC KÚSKOV (až 15)
+      // pozicie utvarov
       const basePositions = [
-        // Ľavá strana
+        // lava strana
         { x: 80, y: 80 },
         { x: 80, y: 200 },
         { x: 80, y: 320 },
         { x: 80, y: 440 },
         
-        // Pravá strana
+        // prava strana
         { x: 780, y: 80 },
         { x: 780, y: 200 },
         { x: 780, y: 320 },
         { x: 780, y: 440 },
         
-        // Spodok - viac priestoru
+        // spodok 
         { x: 200, y: 550 },
         { x: 320, y: 550 },
         { x: 440, y: 550 },
         { x: 560, y: 550 },
         { x: 680, y: 550 },
         
-        // Backup pozície ak by bolo ešte viac kúskov
+        // zaloha
         { x: 400, y: 80 },
         { x: 400, y: 200 },
       ];
@@ -229,7 +229,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       }
       // 2: v JSON je 45, kosostvorec ma 225
       else if (Math.abs(base - 45) < 1 && Math.abs(actual - 225) < 1) {
-        console.log('Applying offset for 45->225');
         offsetX = 75;
         offsetY = 150;
       }
@@ -240,7 +239,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       }
       // 3: v JSON je 90, kosostvorec ma 270
       else if (Math.abs(base - 90) < 1 && Math.abs(actual - 270) < 1) {
-        console.log('Applying offset for 90->270');
         offsetX = -53.033;
         offsetY = 159.099;
       }
@@ -285,14 +283,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const userNorm = normalizeRotation(userPiece.rotation);
     const targetNorm = normalizeRotation(targetPiece.rotation);
     
-    // PRE KOSOŠTVROEC - špecifické kontroly najprv
+    // kontrola pre kosostvorec
     if (userPiece.type === 'parallelogram') {
-      // Kontrola či je to presný match alebo 180° rozdiel
+      // presny match rotacie alebo 180° rozdiel
       const diff = Math.abs(userNorm - targetNorm);
       const altDiff = 360 - diff;
       const minDiff = Math.min(diff, altDiff);
       
-      // Presná zhoda alebo 180° rozdiel (symetria)
+      // presna zhodnost alebo zhodnost po otoceni o 180°
       if (minDiff < 1 || Math.abs(minDiff - 180) < 1) {
         const baseTargetPos = {
           x: boardCenterX + (targetPiece.position.x - targetOffsetX),
@@ -319,7 +317,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       return false;
     }
     
-    // PRE OSTATNÉ TVARY - pôvodná logika so symetriou
+    // ostatne tvary
     const symmetry = PIECE_SYMMETRY[userPiece.type];
     const diff = Math.abs(userNorm - targetNorm);
     const altDiff = 360 - diff;
@@ -354,14 +352,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const showHint = () => {
     if (!currentLevel) return;
 
-    // Penalizácia 30 sekúnd
+    // penalizacia 30 sekund
     setCurrentTime(prev => prev + 30);
 
     const boardCenterX = 500;
     const boardCenterY = 325;
     const POSITION_TOLERANCE = 10;
 
-    // DYNAMICKÝ OFFSET PODĽA VEĽKOSTI SILUETY
+    // velkost siluety pre dynamicky offset
     const targetWidth = currentLevel.targetShape.width;
     const targetHeight = currentLevel.targetShape.height;
     const offsetX = targetWidth / 2;
@@ -421,7 +419,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const boardCenterX = 500;
     const boardCenterY = 325;
 
-    // DYNAMICKÝ OFFSET PODĽA VEĽKOSTI SILUETY
+    // dynamicky offset podla velkosti siluety
     const targetWidth = currentLevel.targetShape.width;
     const targetHeight = currentLevel.targetShape.height;
     const offsetX = targetWidth / 2;
@@ -446,10 +444,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       return false;
     });
 
-    // Kontrola, či sú obsadené VŠETKY target pieces
+    // kontrola ci su vsetky targety obsadene
     const allTargetsOccupied = usedTargetIndices.size === currentLevel.targetShape.pieces.length;
     
-    // Completion je len vtedy, keď sú splnené OBE podmienky
+    // hotovy je level iba ak su vsetky utvary spravne a vsetky targety obsadene
     const isLevelComplete = allPiecesCorrect && allTargetsOccupied;
 
     if (isLevelComplete && !gameState.isCompleted) {
@@ -483,26 +481,26 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       setIsActive(true);
 
       const positions = [
-        // Ľavá strana
+        // lava strana
         { x: 80, y: 80 },
         { x: 80, y: 200 },
         { x: 80, y: 320 },
         { x: 80, y: 440 },
         
-        // Pravá strana
+        // prava strana
         { x: 780, y: 80 },
         { x: 780, y: 200 },
         { x: 780, y: 320 },
         { x: 780, y: 440 },
         
-        // Spodok
+        // spodok
         { x: 200, y: 550 },
         { x: 320, y: 550 },
         { x: 440, y: 550 },
         { x: 560, y: 550 },
         { x: 680, y: 550 },
         
-        // Backup
+        // backup
         { x: 400, y: 80 },
         { x: 400, y: 200 },
       ];
