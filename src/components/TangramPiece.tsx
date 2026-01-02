@@ -36,6 +36,9 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
   const baseSize = PIECE_SIZES[piece.type];
   const size = baseSize * scale;
 
+  // Pre double tap detekciu
+  const lastTouchEnd = useRef<number>(0);
+
   const handleStart = (clientX: number, clientY: number) => {
     setDragging(true);
     const rect = pieceRef.current?.getBoundingClientRect();
@@ -71,9 +74,25 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
     const touch = e.touches[0];
     handleStart(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const now = Date.now();
+    const timeSinceLastTouch = now - lastTouchEnd.current;
+
+    // Double tap detekcia - ak je čas medzi touchmi < 300ms
+    if (timeSinceLastTouch < 300 && timeSinceLastTouch > 0) {
+      // Double tap!
+      e.preventDefault();
+      onRotate(piece.id);
+      lastTouchEnd.current = 0; // Reset aby sa nezavolalo znova
+    } else {
+      lastTouchEnd.current = now;
+    }
+
+    handleEnd();
   };
 
   useEffect(() => {
@@ -88,13 +107,11 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleEnd);
       window.addEventListener('touchmove', handleTouchMove);
-      window.addEventListener('touchend', handleEnd);
       
       return () => {
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('mouseup', handleEnd);
         window.removeEventListener('touchmove', handleTouchMove);
-        window.removeEventListener('touchend', handleEnd);
       };
     }
   }, [dragging, dragOffset, scale]);
@@ -131,6 +148,7 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
           strokeWidth={2 / scale}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
           onDoubleClick={handleDoubleClick}
           style={{
             filter: dragging 

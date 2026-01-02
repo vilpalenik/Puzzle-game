@@ -10,7 +10,7 @@ export const getScale = (windowWidth: number): number => {
   }
   
   // Desktop (1200px+)
-  return 0.8;
+  return 1;
 };
 
 

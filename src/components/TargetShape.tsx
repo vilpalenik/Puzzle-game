@@ -24,12 +24,18 @@ export const TargetShape: React.FC<TargetShapeProps> = ({
   const scaledWidth = baseWidth * scale;
   const scaledHeight = baseHeight * scale;
 
+  // Centrujeme siluetu v rámci 1000x650 boardu
+  const boardWidth = 1000;
+  const boardHeight = 650;
+  
+  const offsetX = (boardWidth - baseWidth) / 2;
+  const offsetY = (boardHeight - baseHeight) / 2;
+
   return (
     <div style={{ 
       position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
+      left: `${offsetX * scale}px`,
+      top: `${offsetY * scale}px`,
       pointerEvents: 'none',
       zIndex: 0,
     }}>

@@ -5,7 +5,6 @@ import HomePage from './pages/HomePage';
 import LevelPage from './pages/LevelPage';
 import GamePage from './pages/GamePage';
 import ControlsPage from './pages/ControlsPage';
-import LevelEditor from './pages/LevelEditor';
 
 const App: React.FC = () => {
   return (
@@ -13,7 +12,6 @@ const App: React.FC = () => {
       <HashRouter>
         <div className="min-h-screen flex flex-col">
           <Routes>
-            <Route path="/editor" element={<LevelEditor />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/levels" element={<LevelPage />} />
             <Route path="/game/:id" element={<GamePage />} />

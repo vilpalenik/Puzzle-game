@@ -3,8 +3,6 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { TangramPiece } from '../components/TangramPiece';
 import { TargetShape } from '../components/TargetShape';
-import { useWindowSize } from '../hooks/useWindowSize';
-import { getScale } from '../utils/scaleHelper';
 import './GamePage.css';
 
 const formatTime = (seconds: number | null | undefined) => {
@@ -17,14 +15,11 @@ const formatTime = (seconds: number | null | undefined) => {
 const GamePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const windowSize = useWindowSize();
   
   const {
     gameState,
     currentLevel,
-    scale,
     currentTime,
-    setScale,
     updatePiecePosition,
     rotatePiece,
     checkCompletion,
@@ -33,20 +28,37 @@ const GamePage: React.FC = () => {
     showHint,
   } = useGame();
 
-  // Získame štatistiky pre aktuálny level
   const levelStats = currentLevel ? gameState.stats[currentLevel.id] : null;
-
   const [showCelebration, setShowCelebration] = useState(false);
 
-  // Aktualizuj scale pri zmene veľkosti okna
+  // Lokálny scale state
+  const [scale, setScale] = useState(1.0);
+  const [boardWidth, setBoardWidth] = useState(1000);
+
+  // Sledovanie šírky wrappera a nastavenie scale
   useEffect(() => {
-    const newScale = getScale(windowSize.width);
-    setScale(newScale);
-  }, [windowSize.width, setScale]);
+    const updateScale = () => {
+      const wrapper = document.querySelector('.game-wrapper-simple');
+      if (wrapper) {
+        const wrapperWidth = wrapper.clientWidth;
+        const targetBoardWidth = wrapperWidth * 0.9; // 90% šírky wrappera
+        const baseWidth = 1000; // pôvodná šírka board
+        const newScale = targetBoardWidth / baseWidth;
+        
+        setScale(newScale);
+        setBoardWidth(targetBoardWidth);
+      }
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   useEffect(() => {
     if (id) {
       loadLevel(parseInt(id));
+      setShowCelebration(false); // Reset celebration pri zmene levelu
     }
   }, [id]);
 
@@ -55,7 +67,7 @@ const GamePage: React.FC = () => {
       const completed = checkCompletion();
       if (completed) {
         setShowCelebration(true);
-        setTimeout(() => setShowCelebration(false), 4000);
+        // ODSTRÁNENÝ setTimeout - okno sa samo nezavrie
       }
     }
   }, [gameState.pieces]);
@@ -72,6 +84,7 @@ const GamePage: React.FC = () => {
 
   const handleNextLevel = () => {
     const nextId = currentLevel.id + 1;
+    setShowCelebration(false); // Skryť celebration pred prechodom
     if (nextId <= 9) {
       navigate(`/game/${nextId}`);
     } else {
@@ -124,9 +137,9 @@ const GamePage: React.FC = () => {
           id="game-board" 
           className="game-board-single"
           style={{
-            width: `${1000 * scale}px`,
+            width: `${boardWidth}px`,
             height: `${650 * scale}px`,
-            transform: `scale(1)`,
+            margin: '0 auto',
           }}
         >
           {/* ČIERNA SILUETA */}

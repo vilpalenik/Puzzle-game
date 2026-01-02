@@ -16,7 +16,7 @@
               "y": 218
             },
             "rotation": 45,
-            "color": "#E57373"
+            "color": "#FF9C00"
           },
           {
             "id": "large-triangle-2",
@@ -26,7 +26,7 @@
               "y": 218
             },
             "rotation": 45,
-            "color": "#64B5F6"
+            "color": "#009CFF"
           },
           {
             "id": "medium-triangle",
@@ -36,7 +36,7 @@
               "y": 218
             },
             "rotation": 90,
-            "color": "#81C784"
+            "color": "#FF9CD2"
           },
           {
             "id": "small-triangle-1",
@@ -46,7 +46,7 @@
               "y": 164.967
             },
             "rotation": 45,
-            "color": "#FFD54F"
+            "color": "#AA4FC2"
           },
           {
             "id": "small-triangle-2",
@@ -56,7 +56,7 @@
               "y": 218
             },
             "rotation": 135,
-            "color": "#FF8A65"
+            "color": "#FF1414"
           },
           {
             "id": "square",
@@ -66,7 +66,7 @@
               "y": 111.934
             },
             "rotation": 45,
-            "color": "#BA68C8"
+            "color": "#00FF00"
           },
           {
             "id": "parallelogram",
@@ -76,7 +76,569 @@
               "y": 164.967
             },
             "rotation": 90,
-            "color": "#4DB6AC"
+            "color": "#FFFF00"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 2,
+      "name": "Kohút",
+      "difficulty": "Easy",
+      "targetShape": {
+        "width": 500,
+        "height": 500,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 180,
+              "y": 218
+            },
+            "rotation": 90,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 180,
+              "y": 278
+            },
+            "rotation": 0,
+            "color": "#009CFF"
+          },
+          {
+            "id": "medium-triangle",
+            "type": "medium-triangle",
+            "position": {
+              "x": 105,
+              "y": 143
+            },
+            "rotation": 45,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 233.033,
+              "y": 374.967
+            },
+            "rotation": 315,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 308.033,
+              "y": 149.967
+            },
+            "rotation": 45,
+            "color": "#FF1414"
+          },
+          {
+            "id": "square",
+            "type": "square",
+            "position": {
+              "x": 255,
+              "y": 203
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram",
+            "type": "parallelogram",
+            "position": {
+              "x": 30,
+              "y": 218
+            },
+            "rotation": 45,
+            "color": "#FFFF00"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 3,
+      "name": "Vrana",
+      "difficulty": "Easy",
+      "targetShape": {
+        "width": 500,
+        "height": 500,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 230,
+              "y": 200
+            },
+            "rotation": 180,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 336.066,
+              "y": 156.066
+            },
+            "rotation": 135,
+            "color": "#009CFF"
+          },
+          {
+            "id": "medium-triangle",
+            "type": "medium-triangle",
+            "position": {
+              "x": 361.066,
+              "y": 75
+            },
+            "rotation": 90,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 436.066,
+              "y": 181.066
+            },
+            "rotation": 90,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 245,
+              "y": 247.132
+            },
+            "rotation": 45,
+            "color": "#FF1414"
+          },
+          {
+            "id": "square",
+            "type": "square",
+            "position": {
+              "x": 361.066,
+              "y": 106.066
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram",
+            "type": "parallelogram",
+            "position": {
+              "x": 155,
+              "y": 200
+            },
+            "rotation": 135,
+            "color": "#FFFF00"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 4,
+      "name": "Stodola",
+      "difficulty": "Medium",
+      "targetShape": {
+        "width": 500,
+        "height": 500,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 212.5,
+              "y": 93.934
+            },
+            "rotation": 45,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 100,
+              "y": 200
+            },
+            "rotation": 0,
+            "color": "#009CFF"
+          },
+          {
+            "id": "medium-triangle",
+            "type": "medium-triangle",
+            "position": {
+              "x": 250,
+              "y": 275
+            },
+            "rotation": 315,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 175,
+              "y": 350
+            },
+            "rotation": 180,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 250,
+              "y": 350
+            },
+            "rotation": 270,
+            "color": "#FF1414"
+          },
+          {
+            "id": "square",
+            "type": "square",
+            "position": {
+              "x": 325,
+              "y": 275
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram",
+            "type": "parallelogram",
+            "position": {
+              "x": 325,
+              "y": 200
+            },
+            "rotation": 135,
+            "color": "#FFFF00"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 5,
+      "name": "Kon",
+      "difficulty": "Medium",
+      "targetShape": {
+        "width": 500,
+        "height": 500,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 250,
+              "y": 150
+            },
+            "rotation": 90,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 356.066,
+              "y": 256.066
+            },
+            "rotation": 135,
+            "color": "#009CFF"
+          },
+          {
+            "id": "medium-triangle",
+            "type": "medium-triangle",
+            "position": {
+              "x": 175,
+              "y": 0
+            },
+            "rotation": 45,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 100,
+              "y": 150
+            },
+            "rotation": 45,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 250,
+              "y": 385
+            },
+            "rotation": 180,
+            "color": "#FF1414"
+          },
+          {
+            "id": "square",
+            "type": "square",
+            "position": {
+              "x": 175,
+              "y": 75
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram",
+            "type": "parallelogram",
+            "position": {
+              "x": 356.066,
+              "y": 256.066
+            },
+            "rotation": 45,
+            "color": "#FFFF00"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 6,
+      "name": "Klokan",
+      "difficulty": "Medium",
+      "targetShape": {
+        "width": 500,
+        "height": 500,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 150,
+              "y": 200
+            },
+            "rotation": 270,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 300,
+              "y": 200
+            },
+            "rotation": 90,
+            "color": "#009CFF"
+          },
+          {
+            "id": "medium-triangle",
+            "type": "medium-triangle",
+            "position": {
+              "x": 278.033,
+              "y": 328.033
+            },
+            "rotation": 45,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 150,
+              "y": 85
+            },
+            "rotation": 180,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 96.967,
+              "y": 220
+            },
+            "rotation": 315,
+            "color": "#FF1414"
+          },
+          {
+            "id": "square",
+            "type": "square",
+            "position": {
+              "x": 225,
+              "y": 275
+            },
+            "rotation": 45,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram",
+            "type": "parallelogram",
+            "position": {
+              "x": 300,
+              "y": 350
+            },
+            "rotation": 0,
+            "color": "#FFFF00"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 7,
+      "name": "Lev",
+      "difficulty": "Hard",
+      "targetShape": {
+        "width": 700,
+        "height": 600,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 240,
+              "y": 150
+            },
+            "rotation": 45,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 390,
+              "y": 150
+            },
+            "rotation": 90,
+            "color": "#009CFF"
+          },
+          {
+            "id": "large-triangle-3",
+            "type": "large-triangle",
+            "position": {
+              "x": 496.066,
+              "y": 256.066
+            },
+            "rotation": 135,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-4",
+            "type": "large-triangle",
+            "position": {
+              "x": 390,
+              "y": 150
+            },
+            "rotation": 315,
+            "color": "#009CFF"
+          },
+          {
+            "id": "medium-triangle-1",
+            "type": "medium-triangle",
+            "position": {
+              "x": 133.934,
+              "y": 256.066
+            },
+            "rotation": 0,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "medium-triangle-2",
+            "type": "medium-triangle",
+            "position": {
+              "x": 283.934,
+              "y": 287.132
+            },
+            "rotation": 45,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "medium-triangle-3",
+            "type": "medium-triangle",
+            "position": {
+              "x": 540,
+              "y": 287.132
+            },
+            "rotation": 45,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 88.934,
+              "y": 226.066
+            },
+            "rotation": 0,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 88.934,
+              "y": 340
+            },
+            "rotation": 180,
+            "color": "#FF1414"
+          },
+          {
+            "id": "small-triangle-3",
+            "type": "small-triangle",
+            "position": {
+              "x": 624.099,
+              "y": 171.967
+            },
+            "rotation": 135,
+            "color": "#FF1414"
+          },
+          {
+            "id": "square-1",
+            "type": "square",
+            "position": {
+              "x": 496.066,
+              "y": 75
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "square-2",
+            "type": "square",
+            "position": {
+              "x": 496.066,
+              "y": 150
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram-1",
+            "type": "parallelogram",
+            "position": {
+              "x": 283.934,
+              "y": 287.132
+            },
+            "rotation": 135,
+            "color": "#FFFF00"
+          },
+          {
+            "id": "parallelogram-2",
+            "type": "parallelogram",
+            "position": {
+              "x": 540,
+              "y": 287.132
+            },
+            "rotation": 135,
+            "color": "#FFFF00"
           }
         ]
       }

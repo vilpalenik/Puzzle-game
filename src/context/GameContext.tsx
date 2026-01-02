@@ -18,8 +18,6 @@ interface GameContextType {
   gameState: GameState;
   currentLevel: Level | null;
   currentTime: number;
-  scale: number;
-  setScale: (scale: number) => void;
   updatePiecePosition: (id: string, position: { x: number; y: number }) => void;
   rotatePiece: (id: string) => void;
   checkCompletion: () => boolean;
@@ -43,8 +41,6 @@ interface GameProviderProps {
 }
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
-  const [scale, setScale] = useState(1.0);
-
   const [gameState, setGameState] = useState<GameState>(() => {
     const saved = localStorage.getItem('tangram-progress');
     if (saved) {
@@ -85,25 +81,43 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const level = levelsData.levels.find(l => l.id === levelId);
     if (level) {
       setCurrentLevel(level);
-      setCurrentTime(0);     // Reset času
-      setIsActive(true);      // Spustenie stopiek
+      setCurrentTime(0);
+      setIsActive(true);
 
-      // Získame existujúce štatistiky alebo vytvoríme nové
-      const currentStats = gameState.stats[levelId] || { bestTime: null, attempts: 0 };
+      // Bezpečný prístup k stats
+      const currentStats = (gameState.stats && gameState.stats[levelId]) 
+        ? gameState.stats[levelId] 
+        : { bestTime: null, attempts: 0 };
       
+      // ROZŠÍRENÉ POZÍCIE PRE VIAC KÚSKOV (až 15)
       const basePositions = [
-        { x: 80, y: 100 },
-        { x: 80, y: 250 },
-        { x: 80, y: 400 },
-        { x: 780, y: 100 },
-        { x: 780, y: 250 },
-        { x: 780, y: 400 },
-        { x: 330, y: 530 },
+        // Ľavá strana
+        { x: 80, y: 80 },
+        { x: 80, y: 200 },
+        { x: 80, y: 320 },
+        { x: 80, y: 440 },
+        
+        // Pravá strana
+        { x: 780, y: 80 },
+        { x: 780, y: 200 },
+        { x: 780, y: 320 },
+        { x: 780, y: 440 },
+        
+        // Spodok - viac priestoru
+        { x: 200, y: 550 },
+        { x: 320, y: 550 },
+        { x: 440, y: 550 },
+        { x: 560, y: 550 },
+        { x: 680, y: 550 },
+        
+        // Backup pozície ak by bolo ešte viac kúskov
+        { x: 400, y: 80 },
+        { x: 400, y: 200 },
       ];
 
       const initialPieces = level.targetShape.pieces.map((piece, index) => ({
         ...piece,
-        position: basePositions[index] || { x: 100 + index * 80, y: 500 },
+        position: basePositions[index] || { x: 100 + (index * 80) % 800, y: 500 },
         rotation: 0,
       }));
       
@@ -113,12 +127,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         pieces: initialPieces, 
         isCompleted: false,
         stats: {
-        ...prev.stats,
-        [levelId]: { 
-          ...currentStats, 
-          attempts: currentStats.attempts + 1 // Zvýšime počet pokusov
-        }
-      } 
+          ...prev.stats,
+          [levelId]: { 
+            ...currentStats, 
+            attempts: currentStats.attempts + 1
+          }
+        } 
       }));
     }
   };
@@ -182,14 +196,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       } else if (!baseDiagonal && !actualDiagonal) {
         const diff = normalizeRot(actual - base);
         if (Math.abs(diff - 90) < 1) {
-          offsetX = 0;
-          offsetY = 75;
+          offsetX = 75;
+          offsetY = 0;
         } else if (Math.abs(diff - 180) < 1) {
           offsetX = 75;
           offsetY = 75;
         } else if (Math.abs(diff - 270) < 1) {
-          offsetX = 75;
-          offsetY = 0;
+          offsetX = 0;
+          offsetY = 75;
         }
       } else if (!baseDiagonal && actualDiagonal) {
         offsetX = halfDiagonal;
@@ -219,7 +233,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     targetPiece: { id: string; type: PieceType; position: { x: number; y: number }; rotation: number; color: string },
     boardCenterX: number,
     boardCenterY: number,
-    positionTolerance: number
+    positionTolerance: number,
+    targetOffsetX: number,
+    targetOffsetY: number
   ): boolean => {
     const symmetry = PIECE_SYMMETRY[userPiece.type];
     const normalizeRotation = (rot: number) => ((rot % 360) + 360) % 360;
@@ -235,8 +251,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       const symmetricAngle = i * symmetry;
       if (Math.abs(minDiff - symmetricAngle) < 1) {
         const baseTargetPos = {
-          x: boardCenterX + (targetPiece.position.x - 250),
-          y: boardCenterY + (targetPiece.position.y - 250)
+          x: boardCenterX + (targetPiece.position.x - targetOffsetX),
+          y: boardCenterY + (targetPiece.position.y - targetOffsetY)
         };
         
         const expectedPos = getPositionForRotation(
@@ -260,12 +276,18 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const showHint = () => {
     if (!currentLevel) return;
 
-    // 1. PRIDANIE PENALIZÁCIE 30 SEKÚND
+    // Penalizácia 30 sekúnd
     setCurrentTime(prev => prev + 30);
 
     const boardCenterX = 500;
     const boardCenterY = 325;
     const POSITION_TOLERANCE = 10;
+
+    // DYNAMICKÝ OFFSET PODĽA VEĽKOSTI SILUETY
+    const targetWidth = currentLevel.targetShape.width;
+    const targetHeight = currentLevel.targetShape.height;
+    const offsetX = targetWidth / 2;
+    const offsetY = targetHeight / 2;
 
     const occupiedTargets = new Set<number>();
     const correctUserPieces = new Set<string>();
@@ -274,7 +296,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       currentLevel.targetShape.pieces.forEach((targetPiece, targetIndex) => {
         if (targetPiece.type !== userPiece.type) return;
         
-        if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE)) {
+        if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE, offsetX, offsetY)) {
           occupiedTargets.add(targetIndex);
           correctUserPieces.add(userPiece.id);
         }
@@ -298,8 +320,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         const randomIndex = Math.floor(Math.random() * candidateTargets.length);
         const { piece: targetPiece } = candidateTargets[randomIndex];
         
-        const correctX = boardCenterX + (targetPiece.position.x - 250);
-        const correctY = boardCenterY + (targetPiece.position.y - 250);
+        const correctX = boardCenterX + (targetPiece.position.x - offsetX);
+        const correctY = boardCenterY + (targetPiece.position.y - offsetY);
 
         setGameState(prev => ({
           ...prev,
@@ -321,6 +343,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     const boardCenterX = 500;
     const boardCenterY = 325;
 
+    // DYNAMICKÝ OFFSET PODĽA VEĽKOSTI SILUETY
+    const targetWidth = currentLevel.targetShape.width;
+    const targetHeight = currentLevel.targetShape.height;
+    const offsetX = targetWidth / 2;
+    const offsetY = targetHeight / 2;
+
     const usedTargetIndices = new Set<number>();
 
     const allPiecesCorrect = gameState.pieces.every(userPiece => {
@@ -331,7 +359,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         );
 
       for (const { piece: targetPiece, index } of candidateTargets) {
-        if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE)) {
+        if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE, offsetX, offsetY)) {
           usedTargetIndices.add(index);
           return true;
         }
@@ -340,13 +368,18 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       return false;
     });
 
-    if (allPiecesCorrect && !gameState.isCompleted) {
-      setIsActive(false); // Zastavíme čas pri výhre
+    // Kontrola, či sú obsadené VŠETKY target pieces
+    const allTargetsOccupied = usedTargetIndices.size === currentLevel.targetShape.pieces.length;
+    
+    // Completion je len vtedy, keď sú splnené OBE podmienky
+    const isLevelComplete = allPiecesCorrect && allTargetsOccupied;
+
+    if (isLevelComplete && !gameState.isCompleted) {
+      setIsActive(false);
 
       const levelId = currentLevel!.id;
       const currentStats = gameState.stats[levelId];
     
-      // Výpočet nového najlepšieho času
       const oldBest = currentStats?.bestTime;
       const newBest = (oldBest === null || oldBest === undefined || currentTime < oldBest) 
         ? currentTime 
@@ -357,34 +390,48 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         isCompleted: true,
         completedLevels: [...new Set([...prev.completedLevels, prev.currentLevel])],
         stats: {
-        ...prev.stats,
-        [levelId]: { ...currentStats, bestTime: newBest }
-      }
+          ...prev.stats,
+          [levelId]: { ...currentStats, bestTime: newBest }
+        }
       }));
     }
 
-    return allPiecesCorrect;
+    return isLevelComplete;
   };
 
   const resetLevel = () => {
     if (currentLevel) {
-      // 1. RESET STOPIEK NA NULU A ICH SPUSTENIE
       setCurrentTime(0);
       setIsActive(true);
 
       const positions = [
-        { x: 80, y: 100 },
-        { x: 80, y: 250 },
-        { x: 80, y: 400 },
-        { x: 780, y: 100 },
-        { x: 780, y: 250 },
-        { x: 780, y: 400 },
-        { x: 330, y: 530 },
+        // Ľavá strana
+        { x: 80, y: 80 },
+        { x: 80, y: 200 },
+        { x: 80, y: 320 },
+        { x: 80, y: 440 },
+        
+        // Pravá strana
+        { x: 780, y: 80 },
+        { x: 780, y: 200 },
+        { x: 780, y: 320 },
+        { x: 780, y: 440 },
+        
+        // Spodok
+        { x: 200, y: 550 },
+        { x: 320, y: 550 },
+        { x: 440, y: 550 },
+        { x: 560, y: 550 },
+        { x: 680, y: 550 },
+        
+        // Backup
+        { x: 400, y: 80 },
+        { x: 400, y: 200 },
       ];
 
       const initialPieces = currentLevel.targetShape.pieces.map((piece, index) => ({
         ...piece,
-        position: positions[index] || { x: 100 + index * 80, y: 500 },
+        position: positions[index] || { x: 100 + (index * 80) % 800, y: 500 },
         rotation: 0,
       }));
       
@@ -400,7 +447,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
             ...prev.stats,
             [levelId]: { 
               ...currentStats, 
-              attempts: currentStats.attempts + 1 // Pričítame nový pokus
+              attempts: currentStats.attempts + 1
             }
           }
         };
@@ -408,22 +455,18 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     }
   };
 
-
-  
   return (
     <GameContext.Provider
       value={{
         gameState,
         currentLevel,
-        scale,
-        setScale,
+        currentTime,
         updatePiecePosition,
         rotatePiece,
         checkCompletion,
         resetLevel,
         loadLevel,
         showHint,
-        currentTime
       }}  
     >
       {children}
