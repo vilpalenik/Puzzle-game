@@ -642,6 +642,310 @@
           }
         ]
       }
+    },
+
+    {
+      "id": 8,
+      "name": "Cyklista",
+      "difficulty": "Hard",
+      "targetShape": {
+        "width": 700,
+        "height": 600,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 100,
+              "y": 480
+            },
+            "rotation": 315,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 312.132,
+              "y": 480
+            },
+            "rotation": 135,
+            "color": "#009CFF"
+          },
+          {
+            "id": "large-triangle-3",
+            "type": "large-triangle",
+            "position": {
+              "x": 440,
+              "y": 480
+            },
+            "rotation": 315,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-4",
+            "type": "large-triangle",
+            "position": {
+              "x": 652.132,
+              "y": 480
+            },
+            "rotation": 135,
+            "color": "#009CFF"
+          },
+          {
+            "id": "medium-triangle-1",
+            "type": "medium-triangle",
+            "position": {
+              "x": 216.066,
+              "y": 277.868
+            },
+            "rotation": 0,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "medium-triangle-2",
+            "type": "medium-triangle",
+            "position": {
+              "x": 527.132,
+              "y": 297.868
+            },
+            "rotation": 135,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 452.132,
+              "y": 222.868
+            },
+            "rotation": 270,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 527.132,
+              "y": 222.868
+            },
+            "rotation": 90,
+            "color": "#FF1414"
+          },
+          {
+            "id": "small-triangle-3",
+            "type": "small-triangle",
+            "position": {
+              "x": 505.165,
+              "y": 319.835
+            },
+            "rotation": 45,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-4",
+            "type": "small-triangle",
+            "position": {
+              "x": 422.132,
+              "y": 478.934
+            },
+            "rotation": 180,
+            "color": "#FF1414"
+          },
+          {
+            "id": "square-1",
+            "type": "square",
+            "position": {
+              "x": 377.132,
+              "y": 147.868
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "square-2",
+            "type": "square",
+            "position": {
+              "x": 350.6155,
+              "y": 68.3185
+            },
+            "rotation": 45,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram-1",
+            "type": "parallelogram",
+            "position": {
+              "x": 452.132,
+              "y": 222.868
+            },
+            "rotation": 135,
+            "color": "#FFFF00"
+          },
+          {
+            "id": "parallelogram-2",
+            "type": "parallelogram",
+            "position": {
+              "x": 452.132,
+              "y": 267.868
+            },
+            "rotation": 90,
+            "color": "#FFFF00"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 9,
+      "name": "Mikroskop",
+      "difficulty": "Hard",
+      "targetShape": {
+        "width": 700,
+        "height": 600,
+        "pieces": [
+          {
+            "id": "large-triangle-1",
+            "type": "large-triangle",
+            "position": {
+              "x": 390.533,
+              "y": 181.066
+            },
+            "rotation": 135,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-2",
+            "type": "large-triangle",
+            "position": {
+              "x": 284.467,
+              "y": 287.132
+            },
+            "rotation": 315,
+            "color": "#009CFF"
+          },
+          {
+            "id": "large-triangle-3",
+            "type": "large-triangle",
+            "position": {
+              "x": 284.467,
+              "y": 586.066
+            },
+            "rotation": 225,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "large-triangle-4",
+            "type": "large-triangle",
+            "position": {
+              "x": 390.533,
+              "y": 480
+            },
+            "rotation": 45,
+            "color": "#FF9C00"
+          },
+          {
+            "id": "medium-triangle-1",
+            "type": "medium-triangle",
+            "position": {
+              "x": 390.533,
+              "y": 75
+            },
+            "rotation": 90,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "medium-triangle-2",
+            "type": "medium-triangle",
+            "position": {
+              "x": 284.467,
+              "y": 393.198
+            },
+            "rotation": 270,
+            "color": "#FF9CD2"
+          },
+          {
+            "id": "small-triangle-1",
+            "type": "small-triangle",
+            "position": {
+              "x": 178.401,
+              "y": 405
+            },
+            "rotation": 0,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "small-triangle-2",
+            "type": "small-triangle",
+            "position": {
+              "x": 253.401,
+              "y": 405
+            },
+            "rotation": 180,
+            "color": "#FF1414"
+          },
+          {
+            "id": "small-triangle-3",
+            "type": "small-triangle",
+            "position": {
+              "x": 253.401,
+              "y": 480
+            },
+            "rotation": 180,
+            "color": "#FF1414"
+          },
+          {
+            "id": "small-triangle-4",
+            "type": "small-triangle",
+            "position": {
+              "x": 231.434,
+              "y": 533.033
+            },
+            "rotation": 45,
+            "color": "#AA4FC2"
+          },
+          {
+            "id": "square-1",
+            "type": "square",
+            "position": {
+              "x": 300,
+              "y": 0
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "square-2",
+            "type": "square",
+            "position": {
+              "x": 300,
+              "y": 393.198
+            },
+            "rotation": 0,
+            "color": "#00FF00"
+          },
+          {
+            "id": "parallelogram-1",
+            "type": "parallelogram",
+            "position": {
+              "x": 284.467,
+              "y": 193
+            },
+            "rotation": 90,
+            "color": "#FFFF00"
+          },
+          {
+            "id": "parallelogram-2",
+            "type": "parallelogram",
+            "position": {
+              "x": 231.434,
+              "y": 246.033
+            },
+            "rotation": 90,
+            "color": "#FFFF00"
+          }
+        ]
+      }
     }
   ]
 }
