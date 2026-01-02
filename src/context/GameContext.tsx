@@ -216,7 +216,50 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     
     if (pieceType === 'parallelogram') {
       const diff = normalizeRot(actual - base);
-      if (Math.abs(diff - 180) < 1) {
+      
+      // 1: v JSON je 0, kosostvorec ma 180
+      if (Math.abs(base - 0) < 1 && Math.abs(actual - 180) < 1) {
+        offsetX = 159.099;
+        offsetY = 53.033;
+      }
+      // 1 opacne
+      else if (Math.abs(base - 180) < 1 && Math.abs(actual - 0) < 1) {
+        offsetX = -159.099;
+        offsetY = -53.033;
+      }
+      // 2: v JSON je 45, kosostvorec ma 225
+      else if (Math.abs(base - 45) < 1 && Math.abs(actual - 225) < 1) {
+        console.log('Applying offset for 45->225');
+        offsetX = 75;
+        offsetY = 150;
+      }
+      // 2 opacne
+      else if (Math.abs(base - 225) < 1 && Math.abs(actual - 45) < 1) {
+        offsetX = -150;
+        offsetY = -150;
+      }
+      // 3: v JSON je 90, kosostvorec ma 270
+      else if (Math.abs(base - 90) < 1 && Math.abs(actual - 270) < 1) {
+        console.log('Applying offset for 90->270');
+        offsetX = -53.033;
+        offsetY = 159.099;
+      }
+      // 3 opacne
+      else if (Math.abs(base - 270) < 1 && Math.abs(actual - 90) < 1) {
+        offsetX = 53.033;
+        offsetY = -159.099;
+      }
+      // 4: v JSON je 135, kosostvorec ma 315
+      else if (Math.abs(base - 135) < 1 && Math.abs(actual - 315) < 1) {
+        offsetX = -150;
+        offsetY = 75;
+      }
+      // 4 opacne
+      else if (Math.abs(base - 315) < 1 && Math.abs(actual - 135) < 1) {
+        offsetX = 150;
+        offsetY = -75;
+      }
+      else if (Math.abs(diff - 180) < 1) {
         offsetX = 160;
         offsetY = 54;
       }
@@ -237,12 +280,47 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     targetOffsetX: number,
     targetOffsetY: number
   ): boolean => {
-    const symmetry = PIECE_SYMMETRY[userPiece.type];
     const normalizeRotation = (rot: number) => ((rot % 360) + 360) % 360;
     
     const userNorm = normalizeRotation(userPiece.rotation);
     const targetNorm = normalizeRotation(targetPiece.rotation);
     
+    // PRE KOSOŠTVROEC - špecifické kontroly najprv
+    if (userPiece.type === 'parallelogram') {
+      // Kontrola či je to presný match alebo 180° rozdiel
+      const diff = Math.abs(userNorm - targetNorm);
+      const altDiff = 360 - diff;
+      const minDiff = Math.min(diff, altDiff);
+      
+      // Presná zhoda alebo 180° rozdiel (symetria)
+      if (minDiff < 1 || Math.abs(minDiff - 180) < 1) {
+        const baseTargetPos = {
+          x: boardCenterX + (targetPiece.position.x - targetOffsetX),
+          y: boardCenterY + (targetPiece.position.y - targetOffsetY)
+        };
+        
+        const expectedPos = getPositionForRotation(
+          baseTargetPos,
+          targetPiece.rotation,
+          userPiece.rotation,
+          userPiece.type
+        );
+        
+        const positionMatch =
+          Math.abs(userPiece.position.x - expectedPos.x) < positionTolerance &&
+          Math.abs(userPiece.position.y - expectedPos.y) < positionTolerance;
+        
+        if (positionMatch) {
+          console.log(`Parallelogram match! Target: ${targetNorm}°, User: ${userNorm}°, Diff: ${minDiff}°`);
+          return true;
+        }
+      }
+      
+      return false;
+    }
+    
+    // PRE OSTATNÉ TVARY - pôvodná logika so symetriou
+    const symmetry = PIECE_SYMMETRY[userPiece.type];
     const diff = Math.abs(userNorm - targetNorm);
     const altDiff = 360 - diff;
     const minDiff = Math.min(diff, altDiff);
