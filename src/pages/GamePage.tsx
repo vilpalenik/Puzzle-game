@@ -176,7 +176,7 @@ const GamePage: React.FC = () => {
           </button>
           
           <div className="game-title-center">
-            <h1>Level {currentLevel.id}: {currentLevel.name}</h1>
+            <h1>{currentLevel.name}</h1>
             <span className={`badge-${currentLevel.difficulty.toLowerCase()}`}>
               {currentLevel.difficulty}
             </span>
@@ -257,17 +257,11 @@ const GamePage: React.FC = () => {
         <div className="celebration-overlay">
           <div className="celebration-content">
             <h1>🎉 Good job! 🎉</h1>
-            <p>Level completed! {currentLevel.id}: {currentLevel.name}!</p>
+            <p>Level completed: {currentLevel.name}!</p>
             <div className="celebration-buttons">
-              {currentLevel.id < 9 ? (
-                <button onClick={handleNextLevel} className="btn-next">
-                  Next level →
-                </button>
-              ) : (
-                <button onClick={() => navigate('/difficulties')} className="btn-next">
-                  Back to difficulties
-                </button>
-              )}
+              <button onClick={handleNextLevel} className="btn-next">
+                Next level →
+              </button>
               <button onClick={() => setShowCelebration(false)} className="btn-continue">
                 continue
               </button>

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
+import levelsDataRaw from '../data/levels.json';
+import type { LevelsData } from '../types/game';
 import './LevelPage.css';
+
+const levelsData = levelsDataRaw as LevelsData;
 
 const LevelPage: React.FC = () => {
   const { difficulty } = useParams<{ difficulty?: string }>();
@@ -9,7 +13,7 @@ const LevelPage: React.FC = () => {
   const [hoveredLevel, setHoveredLevel] = useState<number | null>(null);
   const { gameState } = useGame();
 
-  // ak nie je ziadna obtiaznost, vrat sa na stranku s vyberom obtiaznosti
+  // ak nie je specifikovana obtiaznost, presmeruj na difficulty page
   if (!difficulty) {
     navigate('/difficulties');
     return null;
@@ -23,19 +27,8 @@ const LevelPage: React.FC = () => {
 
   const selectedDifficulty = difficultyMap[difficulty.toLowerCase()];
 
-  const allLevels = [
-    { id: 1, difficulty: 'Easy'},
-    { id: 2, difficulty: 'Easy'},
-    { id: 3, difficulty: 'Easy'},
-    { id: 4, difficulty: 'Medium'},
-    { id: 5, difficulty: 'Medium'},
-    { id: 6, difficulty: 'Medium'},
-    { id: 7, difficulty: 'Hard'},
-    { id: 8, difficulty: 'Hard'},
-    { id: 9, difficulty: 'Hard'},
-  ];
-
-  const levels = allLevels.filter(l => l.difficulty === selectedDifficulty);
+  // nacitanie levelov danej obtiaznosti z jsonu
+  const levels = levelsData.levels.filter(l => l.difficulty === selectedDifficulty);
 
   return (
     <div className="level-container">
@@ -75,6 +68,7 @@ const LevelPage: React.FC = () => {
                   <div className="level-number">
                     {String(level.id).padStart(2, '0')}
                   </div>
+                  <div className="level-name">{level.name}</div>
                   <div className="level-difficulty">{level.difficulty}</div>
                   {isCompleted && (
                     <div className="completed-text">Completed</div>

@@ -14,6 +14,18 @@
   margin-bottom: 48px;
 }
 
+.level-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.level-card-hovered .level-name {
+  color: white;
+}
+
 .back-btn {
   display: inline-block;
   padding: 12px 24px;
@@ -218,6 +230,10 @@
   .lock-icon {
     font-size: 28px;
   }
+
+  .level-name {
+    font-size: 17px;
+  }
 }
 
 /* dokoncene levely */
@@ -335,6 +351,10 @@
 
 /* mobily */
 @media (max-width: 479px) {
+  .level-name {
+    font-size: 16px;
+  }
+
   .level-container {
     padding: 16px;
   }
