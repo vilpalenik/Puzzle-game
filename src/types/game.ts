@@ -29,6 +29,7 @@ export interface Level {
   name: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   targetShape: TargetShape;
+  alternativeSolutions?: TargetShape[]; // pole alternativnych rieseni
 }
 
 export interface LevelsData {
@@ -45,7 +46,7 @@ export interface GameState {
   pieces: TangramPiece[];
   completedLevels: number[];
   isCompleted: boolean;
-  // Nové pole pre štatistiky: kľúčom je ID levelu
+  // pole pre statistiky levelov
   stats: Record<number, LevelStats>;
 }
 

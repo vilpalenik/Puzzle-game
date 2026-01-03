@@ -31,18 +31,18 @@ const GamePage: React.FC = () => {
   const levelStats = currentLevel ? gameState.stats[currentLevel.id] : null;
   const [showCelebration, setShowCelebration] = useState(false);
 
-  // Lokálny scale state
+  
   const [scale, setScale] = useState(1.0);
   const [boardWidth, setBoardWidth] = useState(1000);
 
-  // Sledovanie šírky wrappera a nastavenie scale
+  // nastavenie scale podla sirky wrappera
   useEffect(() => {
     const updateScale = () => {
       const wrapper = document.querySelector('.game-wrapper-simple');
       if (wrapper) {
         const wrapperWidth = wrapper.clientWidth;
-        const targetBoardWidth = wrapperWidth * 0.9; // 90% šírky wrappera
-        const baseWidth = 1000; // pôvodná šírka board
+        const targetBoardWidth = wrapperWidth * 0.9; // 90% sirka wrappera
+        const baseWidth = 1000;
         const newScale = targetBoardWidth / baseWidth;
         
         setScale(newScale);
@@ -58,7 +58,7 @@ const GamePage: React.FC = () => {
   useEffect(() => {
     if (id) {
       loadLevel(parseInt(id));
-      setShowCelebration(false); // Reset celebration pri zmene levelu
+      setShowCelebration(false); // reset celebration pri nacitani noveho levelu
     }
   }, [id]);
 
@@ -84,7 +84,7 @@ const GamePage: React.FC = () => {
   const handleNextLevel = () => {
     setShowCelebration(false); // skryt celebration pred prechodom
     
-    // zisti obtiažnosť aktuálneho levelu
+    // obtiaznost aktualneho levelu
     const difficulty = currentLevel.difficulty;
     
     // vsetky levely
@@ -100,43 +100,43 @@ const GamePage: React.FC = () => {
       { id: 9, difficulty: 'Hard'},
     ];
     
-    // Levely tej istej obtiažnosti
+    // levely rovnakej obtiaznosti
     const sameDifficultyLevels = allLevels.filter(
       l => l.difficulty === difficulty
     );
     
-    // Nevyriešené levely z tej istej obtiažnosti
+    // nevyriesene levely danej obtiaznosti
     const incompleteLevels = sameDifficultyLevels.filter(
       l => !gameState.completedLevels.includes(l.id)
     );
     
     if (incompleteLevels.length > 0) {
-      // Náhodne vyber jeden nevyriešený level
+      // nahodne vyber jeden nedokonceny level
       const randomLevel = incompleteLevels[Math.floor(Math.random() * incompleteLevels.length)];
       navigate(`/game/${randomLevel.id}`);
     } else {
-      // Všetky levely tejto obtiažnosti sú dokončené
-      // Skontroluj či existuje ďalšia odomknutá obtiažnosť
+      // vsetky levely danej obtiaznosti su dokoncene
+      // skontroluj ci je dalsia obtiaznost odomknuta
       const unlockedDifficulties = getUnlockedDifficulties();
       
       if (difficulty === 'Easy' && unlockedDifficulties.includes('Medium')) {
-        // Easy dokončené, choď na Medium
+        // easy dokoncene, chod na medium
         navigate('/difficulties');
       } else if (difficulty === 'Medium' && unlockedDifficulties.includes('Hard')) {
-        // Medium dokončené, choď na Hard
+        // medium dokoncene, chod na hard
         navigate('/difficulties');
       } else {
-        // Všetko dokončené
+        // vsetko prejdene
         navigate('/difficulties');
       }
     }
   };
 
   const handleBackToLevels = () => {
-    // Zisti obtiažnosť aktuálneho levelu
+    // zisti obtiaznost aktualneho levelu
     const difficulty = currentLevel.difficulty.toLowerCase();
     
-    // Zisti či sú všetky levely tejto obtiažnosti dokončené
+    // zisti vsetky levely danej obtiaznosti
     const allLevels = [
       { id: 1, difficulty: 'Easy'},
       { id: 2, difficulty: 'Easy'},
@@ -157,11 +157,11 @@ const GamePage: React.FC = () => {
       l => gameState.completedLevels.includes(l.id)
     ).length;
     
-    // Ak sú všetky dokončené, choď na výber levelov
+    // ak su vsetky dokoncene, prejdi na vyber levelov danej obtiaznosti
     if (completedCount === levelsOfThisDifficulty.length) {
       navigate(`/levels/${difficulty}`);
     } else {
-      // Inak choď na výber obtiažnosti
+      // inac chod na stranku s obtiaznostou
       navigate('/difficulties');
     }
   };
@@ -170,7 +170,6 @@ const GamePage: React.FC = () => {
     <div className="game-container">
       <div className="game-wrapper-simple">
         
-        {/* Top Bar */}
         <div className="game-top-bar">
           <button onClick={handleBackToLevels} className="back-link">
             ← Back
@@ -208,7 +207,7 @@ const GamePage: React.FC = () => {
           </div>
         </div>
 
-        {/* HRACIA PLOCHA */}
+        {/* plocha s tvarmi a siluetou */}
         <div 
           id="game-board" 
           className="game-board-single"
@@ -218,13 +217,13 @@ const GamePage: React.FC = () => {
             margin: '0 auto',
           }}
         >
-          {/* ČIERNA SILUETA */}
+          {/* silueta */}
           <TargetShape 
             targetShape={currentLevel.targetShape}
             scale={scale}
           />
 
-          {/* FAREBNÉ KÚSKY */}
+          {/* tvary */}
           {gameState.pieces.map((piece) => (
             <TangramPiece
               key={piece.id}
@@ -236,7 +235,7 @@ const GamePage: React.FC = () => {
           ))}
         </div>
 
-        {/* Info text */}
+        {/* info text */}
         <div className="game-info">
           <p>💡 Drag pieces with mouse or finger • Rotate the shapes by double-clicking</p>
           {gameState.completedLevels.includes(currentLevel.id) && (
@@ -244,7 +243,7 @@ const GamePage: React.FC = () => {
           )}
         </div>
 
-        {/* Bottom buttons */}
+        {/* spodne tlacitka */}
         <div className="game-actions">
           <button onClick={handleBackToLevels} className="btn-secondary">
             Back to Levels
@@ -253,7 +252,7 @@ const GamePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Celebration popup */}
+      {/* popup po dokonceni levela */}
       {showCelebration && (
         <div className="celebration-overlay">
           <div className="celebration-content">

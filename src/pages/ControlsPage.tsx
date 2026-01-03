@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './ControlsPage.css';
 
+// stranka s ovladanim hry
 const ControlsPage: React.FC = () => {
   const controls = [
     { icon: '🖱️', title: 'Click and drag', description: 'Click on pieces to select and move them by dragging' },

@@ -8,6 +8,7 @@ interface TangramPieceProps {
   scale: number;
 }
 
+// svg pre jednotlive utvary
 const PIECE_PATHS: Record<PieceType, string> = {
   'large-triangle': 'M 0,0 L 150,0 L 0,150 Z',
   'medium-triangle': 'M 0,0 L 0,106.066 L 106.066,0 Z',
@@ -16,6 +17,8 @@ const PIECE_PATHS: Record<PieceType, string> = {
   'parallelogram': 'M 0,0 L 106.066,0 L 159.099,53.033 L 53.033,53.033 Z',
 };
 
+
+// velkosti utvarov (pouzite pre nastavovanie rozmerov SVG)
 const PIECE_SIZES: Record<PieceType, number> = {
   'large-triangle': 150,
   'medium-triangle': 107,
@@ -36,9 +39,11 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
   const baseSize = PIECE_SIZES[piece.type];
   const size = baseSize * scale;
 
-  // Pre double tap detekciu
+  // pre double tap detekciu
   const lastTouchEnd = useRef<number>(0);
 
+
+  // zaciatok dragovania
   const handleStart = (clientX: number, clientY: number) => {
     setDragging(true);
     const rect = pieceRef.current?.getBoundingClientRect();
@@ -50,6 +55,7 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
     }
   };
 
+  // pohyb pri dragovani
   const handleMove = (clientX: number, clientY: number) => {
     if (!dragging) return;
 
@@ -64,6 +70,7 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
     onDrag(piece.id, { x: newX, y: newY });
   };
 
+  // koniec dragovania
   const handleEnd = () => {
     setDragging(false);
   };
@@ -82,12 +89,12 @@ export const TangramPiece: React.FC<TangramPieceProps> = ({
     const now = Date.now();
     const timeSinceLastTouch = now - lastTouchEnd.current;
 
-    // Double tap detekcia - ak je čas medzi touchmi < 300ms
+    // double tap detekcia - musia byt od seba < 300ms
     if (timeSinceLastTouch < 300 && timeSinceLastTouch > 0) {
       // Double tap!
       e.preventDefault();
       onRotate(piece.id);
-      lastTouchEnd.current = 0; // Reset aby sa nezavolalo znova
+      lastTouchEnd.current = 0; // reset aby sa nezavolalo znova
     } else {
       lastTouchEnd.current = now;
     }

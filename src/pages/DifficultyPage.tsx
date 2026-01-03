@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import './DifficultyPage.css';
 
+
+// stranka s vyberom obtiaznosti
 const DifficultyPage: React.FC = () => {
   const navigate = useNavigate();
   const { getUnlockedDifficulties, gameState } = useGame();
@@ -36,17 +38,17 @@ const DifficultyPage: React.FC = () => {
   const allUnlocked = unlockedDifficulties.includes('All');
 
   const handleDifficultySelect = (difficulty: typeof difficulties[0]) => {
-    // Zisti ktoré levely z tejto obtiažnosti nie sú dokončené
+    // zisti nedokoncene levely danej obtiaznosti
     const incompleteLevels = difficulty.levels.filter(
       levelId => !gameState.completedLevels.includes(levelId)
     );
 
     if (incompleteLevels.length > 0) {
-      // Náhodne vyber jeden nedokončený level
+      // nahodne vyber nedokonceny level
       const randomLevel = incompleteLevels[Math.floor(Math.random() * incompleteLevels.length)];
       navigate(`/game/${randomLevel}`);
     } else {
-      // Všetky levely dokončené - choď na výber konkrétneho levelu
+      // vsetky levely danej obtiaznosti su dokoncene, prejdi na vyber levelov
       navigate(`/levels/${difficulty.name.toLowerCase()}`);
     }
   };

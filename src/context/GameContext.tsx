@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { GameState, Level, LevelsData, PieceType } from '../types/game';
+import type { GameState, Level, LevelsData, PieceType, TargetShape } from '../types/game';
 import levelsDataRaw from '../data/levels.json';
 
 const levelsData = levelsDataRaw as LevelsData;
@@ -24,8 +24,8 @@ interface GameContextType {
   resetLevel: () => void;
   loadLevel: (levelId: number) => void;
   showHint: () => void;
-  getUnlockedDifficulties: () => string[]; // NOVÁ FUNKCIA
-  isLevelUnlocked: (levelId: number) => boolean; // NOVÁ FUNKCIA
+  getUnlockedDifficulties: () => string[];
+  isLevelUnlocked: (levelId: number) => boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -469,44 +469,56 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const checkCompletion = (): boolean => {
     if (!currentLevel) return false;
 
-    const POSITION_TOLERANCE = 10;
+    const POSITION_TOLERANCE = 15;
     const boardCenterX = 500;
     const boardCenterY = 325;
 
-    // dynamicky offset podla velkosti siluety
-    const targetWidth = currentLevel.targetShape.width;
-    const targetHeight = currentLevel.targetShape.height;
-    const offsetX = targetWidth / 2;
-    const offsetY = targetHeight / 2;
+    // funkcia na kontrolu ci kusky matchuju dany target
+    const checkAgainstTarget = (targetShape: TargetShape): boolean => {
+      const targetWidth = targetShape.width;
+      const targetHeight = targetShape.height;
+      const offsetX = targetWidth / 2;
+      const offsetY = targetHeight / 2;
 
-    const usedTargetIndices = new Set<number>();
+      const usedTargetIndices = new Set<number>();
 
-    const allPiecesCorrect = gameState.pieces.every(userPiece => {
-      const candidateTargets = currentLevel.targetShape.pieces
-        .map((piece, index) => ({ piece, index }))
-        .filter(({ piece, index }) => 
-          piece.type === userPiece.type && !usedTargetIndices.has(index)
-        );
+      const allPiecesCorrect = gameState.pieces.every(userPiece => {
+        const candidateTargets = targetShape.pieces
+          .map((piece, index) => ({ piece, index }))
+          .filter(({ piece, index }) => 
+            piece.type === userPiece.type && !usedTargetIndices.has(index)
+          );
 
-      for (const { piece: targetPiece, index } of candidateTargets) {
-        if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE, offsetX, offsetY)) {
-          usedTargetIndices.add(index);
-          return true;
+        for (const { piece: targetPiece, index } of candidateTargets) {
+          if (piecesMatch(userPiece, targetPiece, boardCenterX, boardCenterY, POSITION_TOLERANCE, offsetX, offsetY)) {
+            usedTargetIndices.add(index);
+            return true;
+          }
+        }
+
+        return false;
+      });
+
+      const allTargetsOccupied = usedTargetIndices.size === targetShape.pieces.length;
+      return allPiecesCorrect && allTargetsOccupied;
+    };
+
+    // kontrola hlavneho riesenia
+    let isLevelComplete = checkAgainstTarget(currentLevel.targetShape);
+
+    // ak hlavne riesenie nepasuje, skus alternativne
+    if (!isLevelComplete && currentLevel.alternativeSolutions) {
+      for (const altSolution of currentLevel.alternativeSolutions) {
+        if (checkAgainstTarget(altSolution)) {
+          isLevelComplete = true;
+          break;
         }
       }
-
-      return false;
-    });
-
-    // kontrola ci su vsetky targety obsadene
-    const allTargetsOccupied = usedTargetIndices.size === currentLevel.targetShape.pieces.length;
-    
-    // hotovy je level iba ak su vsetky utvary spravne a vsetky targety obsadene
-    const isLevelComplete = allPiecesCorrect && allTargetsOccupied;
+    }
 
     if (isLevelComplete && !gameState.isCompleted) {
       setIsActive(false);
-
+      // ulozenie najlepsieho casu
       const levelId = currentLevel!.id;
       const currentStats = gameState.stats[levelId];
     
@@ -514,7 +526,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       const newBest = (oldBest === null || oldBest === undefined || currentTime < oldBest) 
         ? currentTime 
         : oldBest;
-
+      
+      // aktualizacia stavu hry
       setGameState(prev => ({
         ...prev,
         isCompleted: true,
@@ -559,12 +572,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         { x: 400, y: 200 },
       ];
 
+      // pozicie utvarov
       const initialPieces = currentLevel.targetShape.pieces.map((piece, index) => ({
         ...piece,
         position: positions[index] || { x: 100 + (index * 80) % 800, y: 500 },
         rotation: 0,
       }));
       
+      // aktualizacia stavu hry
       setGameState(prev => {
         const levelId = currentLevel.id;
         const currentStats = prev.stats[levelId] || { bestTime: null, attempts: 0 };

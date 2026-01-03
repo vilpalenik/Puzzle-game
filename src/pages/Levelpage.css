@@ -149,7 +149,7 @@
 }
 
 
-/* Status odomknutia */
+/* status odomknutia */
 .unlock-status {
   margin-top: 20px;
   padding: 16px 24px;
@@ -173,7 +173,7 @@
   font-size: 18px;
 }
 
-/* Zamknuté levely */
+/* zamknute levely */
 .level-card-locked {
   cursor: not-allowed;
   pointer-events: none;
@@ -201,7 +201,6 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* Responzívne úpravy pre unlock status */
 @media (max-width: 767px) {
   .unlock-status {
     margin-top: 16px;
@@ -221,7 +220,7 @@
   }
 }
 
-/* Dokončené levely */
+/* dokoncene levely */
 .level-card-completed {
   position: relative;
   border: 3px solid #10b981 !important;
@@ -270,7 +269,7 @@
   }
 }
 
-/* Hover efekt pre dokončené levely */
+/* hover efekt pre dokoncene levely */
 .level-card-completed:hover {
   border-color: #059669 !important;
   transform: translateY(-4px);
@@ -280,7 +279,7 @@
   box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4) !important;
 }
 
-/* Status odomknutia */
+/* status odomknutia */
 .unlock-status {
   margin-top: 20px;
   padding: 16px 24px;
@@ -304,7 +303,7 @@
   font-size: 18px;
 }
 
-/* Zamknuté levely */
+/* zamknute levely */
 .level-card-locked {
   cursor: not-allowed;
   pointer-events: none;
@@ -332,9 +331,9 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* ========== responzivita ========== */
 
-/* mobily (< 480px) */
+
+/* mobily */
 @media (max-width: 479px) {
   .level-container {
     padding: 16px;
@@ -394,7 +393,6 @@
   }
 }
 
-/* tablety (480px - 767px) */
 @media (min-width: 480px) and (max-width: 767px) {
   .level-container {
     padding: 20px;
@@ -465,7 +463,6 @@
 
 }
 
-/* Tablety (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .level-title {
     font-size: 42px;
@@ -485,14 +482,12 @@
   }
 }
 
-/* Desktop (1024px+) - pôvodné štýly */
 @media (min-width: 1024px) {
   .levels-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* Landscape orientácia na mobiloch */
 @media (max-height: 500px) and (orientation: landscape) {
   .level-container {
     padding: 12px;

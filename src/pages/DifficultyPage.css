@@ -143,7 +143,7 @@
   box-shadow: 0 8px 16px rgba(14, 165, 233, 0.3);
 }
 
-/* Obtiažnosti farby */
+/* obtiaznosti */
 .difficulty-card-easy {
   border-color: #86efac;
 }
@@ -171,7 +171,7 @@
   background: linear-gradient(135deg, #fff1f2, #ffe4e6);
 }
 
-/* Dokončené */
+/* dokoncene levely */
 .difficulty-completed {
   border-color: #10b981 !important;
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
@@ -207,7 +207,7 @@
   }
 }
 
-/* Zamknuté */
+/* uzamknute obtiaznosti */
 .difficulty-card-locked {
   background: linear-gradient(135deg, #e5e7eb, #d1d5db);
   opacity: 0.6;
@@ -230,7 +230,7 @@
   opacity: 0.5;
 }
 
-/* Banner po dokončení všetkého */
+/* banner pri prejdeni hry */
 .all-completed-banner {
   padding: 24px;
   background: linear-gradient(135deg, #10b981, #059669);
@@ -247,7 +247,7 @@
   margin: 0;
 }
 
-/* Responzívne */
+/* mobily */
 @media (max-width: 1023px) {
   .difficulties-grid {
     grid-template-columns: 1fr;

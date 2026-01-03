@@ -6,6 +6,7 @@ interface TargetShapeProps {
   scale: number;
 }
 
+// svg pre jednotlive utvary - rovnake ako v TangramPiece
 const PIECE_PATHS: Record<PieceType, string> = {
   'large-triangle': 'M 0,0 L 150,0 L 0,150 Z',
   'medium-triangle': 'M 0,0 L 0,106.066 L 106.066,0 Z',
@@ -14,6 +15,8 @@ const PIECE_PATHS: Record<PieceType, string> = {
   'parallelogram': 'M 0,0 L 106.066,0 L 159.099,53.033 L 53.033,53.033 Z',
 };
 
+
+// komponent na vykreslenie cieloveho tvaru - ciernej siluety
 export const TargetShape: React.FC<TargetShapeProps> = ({ 
   targetShape,
   scale
@@ -24,7 +27,7 @@ export const TargetShape: React.FC<TargetShapeProps> = ({
   const scaledWidth = baseWidth * scale;
   const scaledHeight = baseHeight * scale;
 
-  // Centrujeme siluetu v rámci 1000x650 boardu
+  // centrovanie na ploche
   const boardWidth = 1000;
   const boardHeight = 650;
   

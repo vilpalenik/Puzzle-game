@@ -120,7 +120,7 @@
     font-size: 72px;
   }
 }
-/* Malé obrazovky - mobilné telefóny (< 480px) */
+/* mobily */
 @media (max-width: 479px) {
   .home-container {
     padding: 16px;
@@ -159,7 +159,6 @@
   }
 }
 
-/* Stredne malé obrazovky - tablety (480px - 767px) */
 @media (min-width: 480px) and (max-width: 767px) {
   .home-container {
     padding: 20px;
@@ -192,7 +191,6 @@
   }
 }
 
-/* Stredné obrazovky - malé tablety (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .home-container {
     padding: 24px;
@@ -220,7 +218,6 @@
   }
 }
 
-/* Väčšie obrazovky - desktopy (1024px+) */
 @media (min-width: 1024px) {
   .home-title {
     font-size: 96px;
@@ -245,7 +242,6 @@
   }
 }
 
-/* Landscape orientácia na mobiloch */
 @media (max-height: 500px) and (orientation: landscape) {
   .home-container {
     min-height: auto;
@@ -273,7 +269,6 @@
   }
 }
 
-/* Veľmi malé obrazovky (< 320px) */
 @media (max-width: 319px) {
   .home-title {
     font-size: 28px;

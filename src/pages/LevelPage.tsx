@@ -9,7 +9,7 @@ const LevelPage: React.FC = () => {
   const [hoveredLevel, setHoveredLevel] = useState<number | null>(null);
   const { gameState } = useGame();
 
-  // Ak nie je špecifikovaná obtiažnosť, presmeruj na difficulty page
+  // ak nie je ziadna obtiaznost, vrat sa na stranku s vyberom obtiaznosti
   if (!difficulty) {
     navigate('/difficulties');
     return null;

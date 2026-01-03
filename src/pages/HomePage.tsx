@@ -1,5 +1,5 @@
-import React from 'react'; //komponenty
-import { Link } from 'react-router-dom'; //linky
+import React from 'react';
+import { Link } from 'react-router-dom';
 import './HomePage.css';
 
 const HomePage: React.FC = () => {

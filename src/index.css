@@ -15,7 +15,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
   margin: 0;
-  /* ODSTRÁŇ: display: flex; place-items: center; */
 }
 
 a {
@@ -32,16 +31,7 @@ button {
   flex-direction: column;
 }
 
-/* ODSTRÁŇ alebo zakomentuj celú :root sekciu */
-/*
-:root {
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;  <- TOTO prepíše HomePage
-}
-*/
 
-/* Ostatné štýly môžeš nechať */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
