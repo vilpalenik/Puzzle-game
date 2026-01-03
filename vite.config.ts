@@ -16,7 +16,8 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/~xpalenikv/semestralne_zadanie_palenik_balla/',
+        start_url: './',
+        scope: './',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -38,5 +39,5 @@ export default defineConfig({
       }
     })
   ],
-  base: '/~xpalenikv/semestralne_zadanie_palenik_balla/', // Nastavenie base path
+  base: './', // Nastavenie base path
 })
