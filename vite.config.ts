@@ -37,5 +37,6 @@ export default defineConfig({
         ]
       }
     })
-  ]
+  ],
+  base: '/~xpalenikv/semestralne_zadanie_palenik_balla/', // Nastavenie base path
 })
